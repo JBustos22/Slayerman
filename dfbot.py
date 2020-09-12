@@ -6,9 +6,11 @@ from settings import CLIENT_TOKEN, DB_PASSWORD
 
 client = discord.Client()
 
+
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
+
 
 @client.event
 async def on_message(message):
@@ -22,28 +24,30 @@ async def on_message(message):
         discord_id = str(message.author)
         mention = message.author.mention
         if cmd == '!top':
-            reply = get_top(message.content)
-            return await message.channel.send('{id}\n{message}'.format(id=mention, message=reply))
+            try:
+                args = message.content.split(' ')[1:]
+                top, map_name, physics = args if len(args) == 3 else ['10'] + args
+                msg = get_top(top, map_name, physics)
+            except Exception:
+                msg = "Huh? `usage: !top <[1-15](default 10)> <map> <physics>`"
         elif cmd == '!myt':
             try:
-                msg_parts = message.content.split(' ')
-                command, map = msg_parts[0:2]
-                physics = msg_parts[2] if len(msg_parts) == 3 else 'run'
-                reply = get_user_data(discord_id, map, physics, DB_PASSWORD)
+                args = message.content.split(' ')[1:]
+                map_name, physics = args if len(args) == 2 else args + ['run']
+                msg = get_user_data(discord_id, map_name, physics, db_pass=DB_PASSWORD)
             except Exception:
-                reply = "Huh? `usage: !myt <map> <physics(opt)>`"
+                msg = "Huh? `usage: !myt <map> <physics(opt)>`"
         elif cmd == '!random':
-            reply = get_random_map()
-            return await message.channel.send('{id}\n{message}'.format(id=mention, message=reply))
-        elif cmd == '!details':
+            msg = get_random_map()
+        elif cmd == '!mapinfo':
             try:
-                map = message.content.split(' ')[1]
-                reply = get_map_details(map)
-                return await message.channel.send(mention, embed=reply)
+                map_name = message.content.split(' ')[1]
+                map_embed = get_map_details(map_name)
+                return await message.channel.send(mention, embed=map_embed)
             except Exception:
-                reply = "Something went wrong."
+                msg = "Huh? `usage: !mapinfo <map>"
         elif cmd == '!help':
-            reply = "\n**top**\n```" \
+            msg = "\n**top**\n```" \
                     "Description: Get list of top times on a given map and physics.\n" \
                     "Usage: !top <[1-15](default 10)> <map> <physics>```\n" \
                     "**myt**\n```" \
@@ -53,12 +57,12 @@ async def on_message(message):
                     "**random**\n```" \
                     "Description: Generate a random map.\n" \
                     "Usage: !random (more params to come)```\n" \
-                    "**details**\n```" \
+                    "**mapinfo**\n```" \
                     "Description: Get detailed map data.\n" \
-                    "Usage: !details <map>```\n"
-            return await message.channel.send('{id}\n{message}'.format(id=mention, message=reply))
+                    "Usage: !mapinfo <map>```\n"
+            return await message.channel.send('{id}\n{message}'.format(id=mention, message=msg))
         else:
-            reply = 'Command not recognized. use !help for a list of commands.'
-        await message.channel.send('{id}\n{message}'.format(id=mention, message=reply))
+            msg = 'Command not recognized. use !help for a list of commands.'
+        await message.channel.send('{id}\n{message}'.format(id=mention, message=msg))
 
 client.run(CLIENT_TOKEN)
