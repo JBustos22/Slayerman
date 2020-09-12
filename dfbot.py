@@ -45,7 +45,7 @@ async def on_message(message):
                 map_embed = get_map_details(map_name)
                 return await message.channel.send(mention, embed=map_embed)
             except Exception:
-                msg = "Huh? `usage: !mapinfo <map>"
+                msg = "Huh? `usage: !mapinfo <map>`"
         elif cmd == '!help':
             msg = "\n**top**\n```" \
                     "Description: Get list of top times on a given map and physics.\n" \
