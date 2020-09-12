@@ -76,7 +76,7 @@ To install requirements, simply do:
 
 9. Invite bot to your server using the Client ID in this link:
   
-    https://discord.com/oauth2/authorize?client_id={Client ID}&scope=bot
+    https://discord.com/oauth2/authorize?client_id={Client_ID}&scope=bot
   
     Note: To invite the bot to a server that is not yours,, give this link with your client ID to the server owner instead.
   
