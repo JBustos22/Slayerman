@@ -45,8 +45,10 @@ To install requirements, simply do:
 10. Once finished, confirm success by checking that there is an table named 'users_ids' under Defrag -> Schemas -> Tables
 
 11. If success, store your database password in keyring by running `python` in the project's environment and doing:
-    `>>> import keyring`
-    `>>> keyring.set_password("db_password", "postgres", "<your password from step 1>")`
+    ```
+    >>> import keyring
+    >>> keyring.set_password("db_password", "postgres", "<your password from step 1>")
+    ```
 
 # Running the bot
 
@@ -63,8 +65,10 @@ To install requirements, simply do:
 5. Copy token.
 
 6. Run `python` in the project's environment and do:
-    `>>> import keyring`
-    `>>> keyring.set_password("bot_token", "dfbot", "<your token goes here>")`
+    ```
+    >>> import keyring
+    >>> keyring.set_password("bot_token", "dfbot", "<your token goes here>")
+    ```
 
 7. Navigate back to General Information in discord developers portal.
 
