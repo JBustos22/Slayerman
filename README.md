@@ -32,14 +32,14 @@ To install requirements, simply do:
     * Username: postgres
     * Password: password chosen at step 1
     * Save
+
 7. Inside your server, right click Databases, create Database.
     * Name this database "Defrag"
     * Save
 
 8. Right click the Defrag database, Restore...
 
-9. Navigate to this repo's folder, select mdd.db
-    **Note: you may have to select 'Format: all files' for this file to be visible
+9. Navigate to this repo's folder, select mdd.db **(Note: you may have to select 'Format: all files' for this file to be visible)**
      * Click Restore
 
 10. Once finished, confirm success by checking that there is an table named 'users_ids' under Defrag -> Schemas -> Tables
@@ -82,7 +82,7 @@ To install requirements, simply do:
   
 10. Finally, run the bot with 
   
-    `python dfbot.py`
+    `python dfbot.py` in the proper environment
 
     You should see a message such as 
 
