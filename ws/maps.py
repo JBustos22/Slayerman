@@ -39,13 +39,27 @@ def get_map_data(map_name):
 def get_map_fields(map_soup):
     fields = dict()
     map_data_table = map_soup.find("table", {"id": "mapdetails_data_table"})
-    fields['Author'] = map_data_table.find("td", string="Author").parent.find("a").text
-    fields['Description'] = map_data_table.find("td", string="Mapname").next_sibling.text
-    fields['Release Date'] = map_data_table.find("td", string="Release date").next_sibling.text
-    physics = [field.text for field in map_data_table.find("td", string="Defrag physics").parent.find_all("a")]
-    fields['Physics'] = ', '.join(physics)
 
-    # Optional fields:
+    # Author (optional)
+    try:
+        fields['Author'] = map_data_table.find("td", string="Author").parent.find("a").text
+    except:
+        fields['Author'] = "Unknown"
+    # Description (optional)
+    try:
+        fields['Description'] = map_data_table.find("td", string="Mapname").next_sibling.text
+    except:
+        pass
+    # Release Date (mandatory)
+    fields['Release Date'] = map_data_table.find("td", string="Release date").next_sibling.text
+    # Physics (optional)
+    try:
+        physics = [field.text for field in map_data_table.find("td", string="Defrag physics").parent.find_all("a")]
+        fields['Physics'] = ', '.join(physics)
+    except:
+        pass
+        
+    # Optional image-based fields:
     opt = dict()
     opt_keys = ["Weapons", "Items", "Functions"]
 
