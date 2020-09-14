@@ -1,8 +1,10 @@
+from settings import CLIENT_TOKEN, DB_PASSWORD
 import discord
 from mdd.top import get_top
 from mdd.user import get_user_data
-from ws.maps import get_random_map, get_map_details
-from settings import CLIENT_TOKEN, DB_PASSWORD
+from ws.maps import get_random_map, get_map_data, create_map_embed
+from middleware.emoji import main as ej
+
 
 client = discord.Client()
 
@@ -38,13 +40,19 @@ async def on_message(message):
             except Exception:
                 msg = "Huh? `usage: !myt <map> <physics(opt)>`"
         elif cmd == '!random':
-            msg = get_random_map()
+            map_name = get_random_map()
+            map_data = get_map_data(map_name)
+            map_embed = create_map_embed(map_data)
+            return await message.channel.send(mention + ' Random map:', embed=map_embed)
         elif cmd == '!mapinfo':
             try:
                 map_name = message.content.split(' ')[1]
-                map_embed = get_map_details(map_name)
+                map_data = get_map_data(map_name)
+                emoted_fields = await ej.turn_to_emojis(guild=message.guild, **map_data['fields']['optional'])
+                map_data['fields']['optional'] = emoted_fields
+                map_embed = create_map_embed(map_data)
                 return await message.channel.send(mention, embed=map_embed)
-            except Exception:
+            except Exception as e:
                 msg = "Huh? `usage: !mapinfo <map>`"
         elif cmd == '!help':
             msg = "\n**top**\n```" \
