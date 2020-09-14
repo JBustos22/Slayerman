@@ -91,4 +91,12 @@ def create_map_embed(map_data: dict):
         value = value.replace(',', '')
         map_embed.add_field(name=key, value=value, inline=False)
 
+    # Add world record data if map has the Timer function
+    if 'Functions' in optional_fields and 'Timer' in optional_fields['Functions']:
+        try:
+            from mdd.top import get_wrs
+            map_embed.add_field(name='World Records', value=get_wrs(map_name))
+        except:
+            pass
+
     return map_embed
