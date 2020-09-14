@@ -1,6 +1,6 @@
 from settings import CLIENT_TOKEN, DB_PASSWORD
 import discord
-from mdd.top import get_top
+from mdd.top import get_top, get_wrs
 from mdd.user import get_user_data
 from ws.maps import get_random_map, get_map_data, create_map_embed
 from middleware.emoji import main as ej
@@ -57,6 +57,7 @@ async def on_message(message):
                 emoted_fields = await ej.turn_to_emojis(guild=message.guild, **map_data['fields']['optional'])
                 map_data['fields']['optional'] = emoted_fields
                 map_embed = create_map_embed(map_data)
+                map_embed.add_field(name = "World Records", value = get_wrs(map_name))
                 return await message.channel.send(mention, embed=map_embed)
             except Exception as e:
                 msg = "Huh? `usage: !mapinfo <map>`"
