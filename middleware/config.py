@@ -7,7 +7,8 @@ png_weapons_dict = {
     'Railgun': 'rlg',
     'Plasmagun': 'pg',
     'Big Fucking Gun': 'bfg',
-    'Grappling Hook': 'hook'
+    'Grappling hook': 'hook',
+    'Grenade Launcher': 'gl'
 }
 
 png_items_dict = {
@@ -24,7 +25,8 @@ png_items_dict = {
     'Quad-Damage': 'quad',
     'Regeneration': 'regen',
     'Medikit': 'medkit',
-    'Invisibility': 'invis'
+    'Invisibility': 'invis',
+    'Ambient sounds': 'sounds'
 }
 
 png_functions_dict = {
