@@ -60,7 +60,11 @@ async def on_message(message):
             try:
                 map_name = message.content.split(' ')[1]
                 map_data = get_map_data(map_name)
-                is_df = "Timer" in map_data['fields']['optional']['Functions']
+                # Check if map is a Defrag map
+                try:
+                    is_df = "Timer" in map_data['fields']['optional']['Functions']
+                except:
+                    is_df = False
                 emoted_fields = await ej.turn_to_emojis(guild=message.guild, **map_data['fields']['optional'])
                 map_data['fields']['optional'] = emoted_fields
                 map_embed = create_map_embed(map_data)
