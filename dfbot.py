@@ -4,6 +4,7 @@ from mdd.top import get_top
 from mdd.user import get_user_data
 from ws.maps import get_random_map, get_map_data, create_map_embed
 from middleware.emoji import main as ej
+import sys
 
 
 client = discord.Client()
@@ -75,4 +76,4 @@ async def on_message(message):
             msg = 'Command not recognized. use !help for a list of commands.'
         await message.channel.send('{id}\n{message}'.format(id=mention, message=msg))
 
-client.run(CLIENT_TOKEN)
+client.run(CLIENT_TOKEN if len(sys.argv) == 1 else sys.argv[1])
