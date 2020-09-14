@@ -60,17 +60,9 @@ async def on_message(message):
             try:
                 map_name = message.content.split(' ')[1]
                 map_data = get_map_data(map_name)
-                # Check if map is a Defrag map
-                try:
-                    is_df = "Timer" in map_data['fields']['optional']['Functions']
-                except:
-                    is_df = False
                 emoted_fields = await ej.turn_to_emojis(guild=message.guild, **map_data['fields']['optional'])
                 map_data['fields']['optional'] = emoted_fields
                 map_embed = create_map_embed(map_data)
-                # Add world record fields to maps with a timer
-                if is_df:
-                    map_embed.add_field(name = "World Records", value = get_wrs(map_name))
                 return await message.channel.send(mention, embed=map_embed)
             except Exception as e:
                 msg = "Huh? `usage: !mapinfo <map>`"
