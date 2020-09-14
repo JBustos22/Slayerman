@@ -33,6 +33,12 @@ async def on_message(message):
                 msg = get_top(top, map_name, physics)
             except Exception:
                 msg = "Huh? `usage: !top <[1-15](default 10)> <map> <physics>`"
+        elif cmd == "!wrs":
+            try:
+                map_name = message.content.split(' ')[1]
+                msg = get_wrs(map_name)
+            except:
+                msg = "Huh? ``usage: !wrs <map>``"
         elif cmd == '!myt':
             try:
                 args = message.content.split(' ')[1:]
