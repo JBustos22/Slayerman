@@ -2,8 +2,10 @@ from settings import CLIENT_TOKEN, DB_PASSWORD
 import discord
 from mdd.top import get_top, get_wrs
 from mdd.user import get_user_data
-from ws.maps import get_random_map, get_map_data, create_map_embed
-from middleware.emoji import main as ej
+from ws.maps import get_random_map, get_map_data
+from middleware.emojis import main as ej
+from middleware.players import main as plyr
+from middleware.embeds import main as emb
 import sys
 
 
@@ -30,7 +32,12 @@ async def on_message(message):
             try:
                 args = message.content.split(' ')[1:]
                 top, map_name, physics = args if len(args) == 3 else ['10'] + args
-                msg = get_top(top, map_name, physics)
+                top_data = get_top(top, map_name, physics)
+                top_data['fields']['countries'] = ej.turn_country_ids_to_emojis(top_data['fields']['countries'])
+                top_data['fields']['Player'] = plyr.attach_country_to_players(top_data['fields']['Player'],
+                                                                              top_data['fields'].pop('countries'))
+                top_embed = emb.create_top_embed(top_data)
+                return await message.channel.send(mention + ' Random map:', embed=top_embed)
             except Exception:
                 msg = "Huh? `usage: !top <[1-15](default 10)> <map> <physics>`"
         elif cmd == "!wrs":
@@ -50,9 +57,9 @@ async def on_message(message):
             try:
                 map_name = get_random_map()
                 map_data = get_map_data(map_name)
-                emoted_fields = await ej.turn_to_emojis(guild=message.guild, **map_data['fields']['optional'])
+                emoted_fields = await ej.turn_to_custom_emojis(guild=message.guild, **map_data['fields']['optional'])
                 map_data['fields']['optional'] = emoted_fields
-                map_embed = create_map_embed(map_data)
+                map_embed = emb.create_map_embed(map_data)
                 return await message.channel.send(mention + ' Random map:', embed=map_embed)
             except:
                 msg = "Huh? `usage: !random <map>`"
@@ -60,9 +67,9 @@ async def on_message(message):
             try:
                 map_name = message.content.split(' ')[1]
                 map_data = get_map_data(map_name)
-                emoted_fields = await ej.turn_to_emojis(guild=message.guild, **map_data['fields']['optional'])
+                emoted_fields = await ej.turn_to_custom_emojis(guild=message.guild, **map_data['fields']['optional'])
                 map_data['fields']['optional'] = emoted_fields
-                map_embed = create_map_embed(map_data)
+                map_embed = emb.create_map_embed(map_data)
                 return await message.channel.send(mention, embed=map_embed)
             except Exception as e:
                 msg = "Huh? `usage: !mapinfo <map>`"
