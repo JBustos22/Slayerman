@@ -36,4 +36,4 @@ def get_wrs(map_name: str):
         except Exception:
             continue
 
-    return f"```{tabulate(rows, headers=['Physics', 'Player', 'Time'])}```"
+    return f"```{tabulate(rows, headers=['Physics', 'Player', 'Time'])}```" if len(rows) > 0 else f"There are no runs on {map_name}."
