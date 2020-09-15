@@ -1,7 +1,16 @@
 from middleware.config import png_dict
 
 
-async def turn_to_emojis(guild, **original_dict):
+def turn_country_ids_to_emojis(country_id_list):
+    country_emoji_list = []
+    for country_id in country_id_list:
+        # else determines empty country emoji (arrrr)
+        emoji_string = f":flag_{country_id}:" if country_id != '' else ':flag_??:'
+        country_emoji_list.append(emoji_string)
+    return country_emoji_list
+
+
+async def turn_to_custom_emojis(guild, **original_dict):
     for category, objects in original_dict.items():
         custom_emojis = await create_custom_emojis(guild, category, objects)
         for object, emoji in custom_emojis.items():
@@ -21,7 +30,3 @@ async def create_custom_emojis(guild, category, objects):
         except Exception:
             pass
     return custom_emojis
-
-
-def remove_custom_emojis(guild, emojis):
-    return ''

@@ -4,8 +4,9 @@ from tabulate import tabulate
 
 
 def get_top(top_num: str, map_name: str, physics: str):
+    physics_dict = {'vq3': '0', 'cpm': '1'}
     top_num = str(abs(int(top_num))) if top_num.isnumeric() else '10'
-    physics_num = '1' if physics == 'cpm' else '0'
+    physics_num = physics_dict[physics]
     url = f'https://q3df.org/records/details?map={map_name}&mode=-1&physic={physics_num}'
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
@@ -13,12 +14,23 @@ def get_top(top_num: str, map_name: str, physics: str):
     max_recs = len(top)
     top_num = int(top_num) if int(top_num) < max_recs else max_recs
     top = soup.find('table', attrs={'class': 'recordlist'}).tbody.find_all('tr')[:top_num]
-    rows = []
+    top_data = {'top_num': top_num, 'map_name': map_name, 'physics': physics, 'url': url}
+    top_fields = {
+        'countries': [],
+        'players': [],
+        'times': [],
+        'ranks': []
+    }
     for rank in range(0, top_num):
-        data = top[rank].find_all('td')[:4]
-        date, player, time, standing = data[0].text, data[1].text, data[2].text, data[3].text
-        rows.append([date, player, time, standing])
-    return f"```{tabulate(rows, headers=['Date/Time', 'Player', 'Time', 'Rank'])}```"
+        data = top[rank].find_all('td')[1:4]
+        top_fields['players'].append(f"{data[0].text}")
+        top_fields['countries'].append(data[0].next['title'])
+        top_fields['times'].append(f"{data[1].text}")
+        top_fields['ranks'].append(f"{data[2].text}")
+
+    top_data['fields'] = top_fields
+    return top_data
+
 
 def get_wrs(map_name: str):
     rows = []
