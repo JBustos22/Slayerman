@@ -34,11 +34,11 @@ async def on_message(message):
                 top, map_name, physics = args if len(args) == 3 else ['10'] + args
                 top_data = get_top(top, map_name, physics)
                 top_data['fields']['countries'] = ej.turn_country_ids_to_emojis(top_data['fields']['countries'])
-                top_data['fields']['Player'] = plyr.attach_country_to_players(top_data['fields']['Player'],
+                top_data['fields']['players'] = plyr.format_player_flags(top_data['fields']['players'],
                                                                               top_data['fields'].pop('countries'))
                 top_embed = emb.create_top_embed(top_data)
-                return await message.channel.send(mention + ' Random map:', embed=top_embed)
-            except Exception:
+                return await message.channel.send(mention, embed=top_embed)
+            except Exception as e:
                 msg = "Huh? `usage: !top <[1-15](default 10)> <map> <physics>`"
         elif cmd == "!wrs":
             try:

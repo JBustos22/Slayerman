@@ -16,20 +16,21 @@ def get_top(top_num: str, map_name: str, physics: str):
     top = soup.find('table', attrs={'class': 'recordlist'}).tbody.find_all('tr')[:top_num]
     top_data = {'top_num': top_num, 'map_name': map_name, 'physics': physics, 'url': url}
     top_fields = {
-        'Rank': [],
         'countries': [],
-        'Player': [],
-        'Time': [],
+        'players': [],
+        'times': [],
+        'ranks': []
     }
     for rank in range(0, top_num):
         data = top[rank].find_all('td')[1:4]
-        top_fields['Player'].append(data[0].text)
+        top_fields['players'].append(f"{data[0].text}")
         top_fields['countries'].append(data[0].next['title'])
-        top_fields['Time'].append(data[1].text)
-        top_fields['Rank'].append(data[2].text)
+        top_fields['times'].append(f"{data[1].text}")
+        top_fields['ranks'].append(f"{data[2].text}")
 
     top_data['fields'] = top_fields
     return top_data
+
 
 def get_wrs(map_name: str):
     rows = []

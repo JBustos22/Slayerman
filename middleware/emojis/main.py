@@ -5,7 +5,7 @@ def turn_country_ids_to_emojis(country_id_list):
     country_emoji_list = []
     for country_id in country_id_list:
         # else determines empty country emoji (arrrr)
-        emoji_string = f":flag_{country_id}:" if country_id != '' else ':pirate_flag:'
+        emoji_string = f":flag_{country_id}:" if country_id != '' else ':flag_??:'
         country_emoji_list.append(emoji_string)
     return country_emoji_list
 

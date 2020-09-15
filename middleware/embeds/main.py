@@ -3,18 +3,37 @@ from discord import Embed, Colour
 
 def create_top_embed(top_data: dict):
     # Add fields
-    title = f"Top {top_data['top_num']} {top_data['physics']} times on {top_data['map_name']}"
+    title = f"{top_data['map_name'].capitalize()} | Top {top_data['top_num']} {top_data['physics'].upper()}"
     author = 'mDd records'
     url = top_data['url']
     top_embed = Embed(title=title, url=url, color=Colour(0x9FC1E4))
-    thumbnail_url = "https://q3df.org/Views/frontend/_resources/images/logo.png"
+    thumbnail_url = f"http://ws.q3df.org/images/levelshots/512x384/{top_data['map_name']}.jpg?fallback=1"
     top_embed.set_thumbnail(url=thumbnail_url)
     top_embed.set_author(name=author)
-    for key, value_list in top_data['fields'].items():
-        values = '\n'.join(value_list)
-        top_embed.add_field(name=key, value=values, inline=True)
+    map_levelshot_url = "https://q3df.org/Views/frontend/_resources/images/logo.png"
+    top_embed.set_image(url=map_levelshot_url)
+
+    top_data['fields'] = format_top_data_fields(top_data['fields'])
+    # join fields into one field
+    top_data['table_rows'] = []
+    for i in range(0, top_data['top_num']):
+        top_data['table_rows'].append(' | '.join([field[i] for field in top_data['fields'].values()]) + ' |`')
+    table = '\n'.join(top_data['table_rows'])
+    top_embed.add_field(name='Records', value=table, inline=False)
     return top_embed
 
+
+def format_top_data_fields(top_data_fields):
+    for key, values in top_data_fields.items():
+        max_value_length = len(max(values, key=len))
+        formatted_values = []
+        for value in values:
+            padding = ' ' * (max_value_length - len(value))
+            if key == 'players':
+                value = value.replace('flag_??', 'pirate_flag')  # unknown flag to pirate flag
+            formatted_values.append(value + padding)
+        top_data_fields[key] = formatted_values
+    return top_data_fields
 
 def create_map_embed(map_data: dict):
     map_name, map_url, map_levelshot_url = [map_data[datum] for datum in ['name', 'url', 'levelshot_url']]
