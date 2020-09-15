@@ -7,11 +7,11 @@ def create_top_embed(top_data: dict):
     author = 'mDd records'
     url = top_data['url']
     top_embed = Embed(title=title, url=url, color=Colour(0x9FC1E4))
-    thumbnail_url = f"http://ws.q3df.org/images/levelshots/512x384/{top_data['map_name']}.jpg?fallback=1"
+    thumbnail_url = "https://q3df.org/Views/frontend/_resources/images/logo.png"
+    map_levelshot_url = f"http://ws.q3df.org/images/levelshots/512x384/{top_data['map_name']}.jpg?fallback=1"
     top_embed.set_thumbnail(url=thumbnail_url)
-    top_embed.set_author(name=author)
-    map_levelshot_url = "https://q3df.org/Views/frontend/_resources/images/logo.png"
     top_embed.set_image(url=map_levelshot_url)
+    top_embed.set_author(name=author)
 
     top_data['fields'] = format_top_data_fields(top_data['fields'])
     # join fields into one field
