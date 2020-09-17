@@ -1,6 +1,6 @@
-from settings import CLIENT_TOKEN, DB_PASSWORD
+from settings import CLIENT_TOKEN
 import discord
-from mdd.top import get_top, get_wrs
+from mdd.top import get_top_from_db, get_wrs
 from mdd.user import get_user_data
 from ws.maps import get_random_map, get_map_data
 from middleware.emojis import main as ej
@@ -32,7 +32,7 @@ async def on_message(message):
             try:
                 args = message.content.split(' ')[1:]
                 top, map_name, physics = args if len(args) == 3 else ['10'] + args
-                top_data = get_top(top, map_name, physics)
+                top_data = get_top_from_db(top, map_name, physics)
                 top_data['fields']['countries'] = ej.turn_country_ids_to_emojis(top_data['fields']['countries'])
                 top_data['fields']['players'] = plyr.format_player_flags(top_data['fields']['players'],
                                                                               top_data['fields'].pop('countries'))
@@ -50,7 +50,7 @@ async def on_message(message):
             try:
                 args = message.content.split(' ')[1:]
                 map_name, physics = args if len(args) == 2 else args + ['run']
-                msg = get_user_data(discord_id, map_name, physics, db_pass=DB_PASSWORD)
+                msg = get_user_data(discord_id, map_name, physics)
             except Exception:
                 msg = "Huh? `usage: !myt <map> <physics(opt)>`"
         elif cmd == '!random':
@@ -62,7 +62,7 @@ async def on_message(message):
                 map_embed = emb.create_map_embed(map_data)
                 return await message.channel.send(mention + ' Random map:', embed=map_embed)
             except:
-                msg = "Huh? `usage: !random <map>`"
+                msg = "Huh? `usage: !random`"
         elif cmd == '!mapinfo':
             try:
                 map_name = message.content.split(' ')[1]
