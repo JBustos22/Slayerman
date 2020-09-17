@@ -3,7 +3,7 @@ from discord import Embed, Colour
 
 def create_top_embed(top_data: dict):
     # Add fields
-    title = f"{top_data['map_name'].capitalize()} | Top {top_data['top_num']} {top_data['physics'].upper()}"
+    title = f"{top_data['map_name'].capitalize()} | Top {top_data['top_num']} {top_data['physics'].replace('-run','').upper()}"
     author = 'mDd records'
     url = top_data['url']
     top_embed = Embed(title=title, url=url, color=Colour(0x9FC1E4))
