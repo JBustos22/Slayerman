@@ -49,7 +49,7 @@ async def on_message(message):
         elif cmd == '!myt':
             try:
                 args = message.content.split(' ')[1:]
-                map_name, physics = args if len(args) == 2 else args + ['run']
+                map_name, physics = (args[0], args[1] + '-run') if len(args) == 2 else args + ['all']
                 msg = get_user_data(discord_id, map_name, physics)
             except Exception:
                 msg = "Huh? `usage: !myt <map> <physics(opt)>`"
