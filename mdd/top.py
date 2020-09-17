@@ -73,19 +73,21 @@ def get_top_from_db(top_num: str, map_name: str, physics: str):
 
 
 def get_wrs(map_name: str):
-    rows = []
+    db_string = f"postgres://postgres:{DB_PASSWORD}@localhost:5432/Defrag"
+    db = create_engine(db_string)
 
-    for physics_num in [0,1]:
-        url = f'https://q3df.org/records/details?map={map_name}&mode=-1&physic={physics_num}'
-        r = requests.get(url)
-        soup = BeautifulSoup(r.text, 'html.parser')
-        try:
-            top = soup.find('table', attrs={'class': 'recordlist'}).tbody.find_all('tr')[0]
-            data = top.find_all('td')[:4]
-            physics = 'vq3' if physics_num == 0 else 'cpm'
-            date, player, time = data[0].text, data[1].text, data[2].text
+    with db.connect() as conn:
+        # Read
+        select_statement = "select distinct on (physics) physics, player_name, time " \
+                           "from mdd_records_ranked " \
+                           "where map_name=%s " \
+                           "and player_pos = 1 " \
+                           "order by physics desc "
+        replace_vars = (map_name,)
+        result_set = conn.execute(select_statement, replace_vars)
+        rows = []
+        for r in result_set:
+            player, time, physics = r.player_name, r.time, r.physics.replace('-run', '')
             rows.append([physics, player, time])
-        except Exception:
-            continue
 
     return f"```{tabulate(rows, headers=['Physics', 'Player', 'Time'])}```" if len(rows) > 0 else f"There are no runs on {map_name}."
