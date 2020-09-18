@@ -52,7 +52,7 @@ def create_map_embed(map_data: dict):
     # Add world record data if map has the Timer function
     if 'Functions' in optional_fields and 'timer' in optional_fields['Functions'].lower():
         try:
-            from mdd.top import get_wrs
+            from src.mdd.top import get_wrs
             map_embed.add_field(name='World Records', value=get_wrs(map_name))
         except:
             pass

@@ -1,10 +1,10 @@
 from tabulate import tabulate
-from settings import DB_PASSWORD
+from settings import DB_PASSWORD, DB_HOST
 from sqlalchemy import create_engine
 
 
 def get_user_data(discord_id: str, df_map: str, physics: str= 'all'):
-    db_string = f"postgres://postgres:{DB_PASSWORD}@localhost:5432/Defrag"
+    db_string = f"postgres://postgres:{DB_PASSWORD}@{DB_HOST}:5432/Defrag"
     db = create_engine(db_string)
 
     with db.connect() as conn:

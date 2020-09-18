@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from tabulate import tabulate
-from settings import DB_PASSWORD
+from settings import DB_PASSWORD, DB_HOST
 from sqlalchemy import create_engine
 
 
@@ -49,7 +49,7 @@ def get_top_from_db(top_num: str, map_name: str, physics: str):
         'ranks': []
     }
 
-    db_string = f"postgres://postgres:{DB_PASSWORD}@localhost:5432/Defrag"
+    db_string = f"postgres://postgres:{DB_PASSWORD}@{DB_HOST}:5432/Defrag"
     db = create_engine(db_string)
 
     with db.connect() as conn:
@@ -73,7 +73,7 @@ def get_top_from_db(top_num: str, map_name: str, physics: str):
 
 
 def get_wrs(map_name: str):
-    db_string = f"postgres://postgres:{DB_PASSWORD}@localhost:5432/Defrag"
+    db_string = f"postgres://postgres:{DB_PASSWORD}@{DB_HOST}:5432/Defrag"
     db = create_engine(db_string)
 
     with db.connect() as conn:
