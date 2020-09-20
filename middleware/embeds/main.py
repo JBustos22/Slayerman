@@ -33,6 +33,7 @@ def format_top_data_fields(top_data_fields):
         top_data_fields[key] = formatted_values
     return top_data_fields
 
+
 def create_map_embed(map_data: dict):
     map_name, map_url, map_levelshot_url = [map_data[datum] for datum in ['name', 'url', 'levelshot_url']]
     map_embed = Embed(title=map_name, url=map_url, color=Colour(0xffffff))
@@ -53,7 +54,12 @@ def create_map_embed(map_data: dict):
     if 'Functions' in optional_fields and 'timer' in optional_fields['Functions'].lower():
         try:
             from mdd.top import get_wrs
-            map_embed.add_field(name='World Records', value=get_wrs(map_name))
+            from middleware.emojis.main import turn_country_ids_to_emojis
+            wr_data = get_wrs(map_name)
+            for physics, wr_entry in wr_data.items():
+                country_string = turn_country_ids_to_emojis([wr_entry['country']])[0].replace("flag_??", "pirate_flag")
+                display_string = f"{country_string} {wr_entry['player']} [{wr_entry['time']}]"
+                map_embed.add_field(name=f"{physics} record:", value=display_string, inline=True)
         except:
             pass
 

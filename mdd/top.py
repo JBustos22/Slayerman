@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from tabulate import tabulate
-from settings import DB_PASSWORD
+from settings import CONN_STRING
 from sqlalchemy import create_engine
 
 
@@ -49,8 +49,7 @@ def get_top_from_db(top_num: str, map_name: str, physics: str):
         'ranks': []
     }
 
-    db_string = f"postgres://postgres:{DB_PASSWORD}@localhost:5432/Defrag"
-    db = create_engine(db_string)
+    db = create_engine(CONN_STRING)
 
     with db.connect() as conn:
         # Read
@@ -78,16 +77,16 @@ def get_wrs(map_name: str):
 
     with db.connect() as conn:
         # Read
-        select_statement = "select distinct on (physics) physics, player_name, time " \
+        select_statement = "select distinct on (physics) physics, country, player_name, time " \
                            "from mdd_records_ranked " \
                            "where map_name=%s " \
                            "and player_pos = 1 " \
                            "order by physics desc "
         replace_vars = (map_name,)
         result_set = conn.execute(select_statement, replace_vars)
-        rows = []
+        wr_data = {}
         for r in result_set:
-            player, time, physics = r.player_name, r.time, r.physics.replace('-run', '')
-            rows.append([physics, player, time])
+            player, country, time, physics = r.player_name, r.country, r.time, r.physics.replace('-run', '')
+            wr_data[physics.replace('-run', '')] = {"country": country, "player": player, "time": time}
 
-    return f"```{tabulate(rows, headers=['Physics', 'Player', 'Time'])}```" if len(rows) > 0 else f"There are no runs on {map_name}."
+    return wr_data
