@@ -1,4 +1,5 @@
 from discord import Embed, Colour
+from middleware.emojis.main import turn_country_ids_to_emojis
 
 
 def create_top_embed(top_data: dict):
@@ -54,7 +55,6 @@ def create_map_embed(map_data: dict):
     if 'Functions' in optional_fields and 'timer' in optional_fields['Functions'].lower():
         try:
             from mdd.top import get_wrs
-            from middleware.emojis.main import turn_country_ids_to_emojis
             wr_data = get_wrs(map_name)
             for physics, wr_entry in wr_data.items():
                 country_string = turn_country_ids_to_emojis([wr_entry['country']])[0].replace("flag_??", "pirate_flag")
@@ -64,3 +64,20 @@ def create_map_embed(map_data: dict):
             pass
 
     return map_embed
+
+
+def create_stats_embed(stats_data):
+    # Add fields
+    id, name, country = [stats_data.pop(datum) for datum in ['player_id', 'player_name', 'country']]
+    country_string = turn_country_ids_to_emojis([country])[0].replace("flag_??", "pirate_flag")
+    title = f"{country_string} {name} | Overall Statistics"
+    author = 'mDd records'
+    url = f"https://q3df.org/profil?id={id}"
+    stats_embed = Embed(title=title, url=url, color=Colour(0x9FC1E4))
+    stats_embed.set_thumbnail(url="http://ws.q3df.org/images/icons/32x32/bot_sarge.png")
+    stats_embed.set_author(name=author)
+    # join fields into one field
+    for key, value in stats_data.items():
+        field_name = key.replace('_', ' ').capitalize()
+        stats_embed.add_field(name=field_name, value=value, inline=False)
+    return stats_embed

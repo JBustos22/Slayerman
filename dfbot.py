@@ -1,7 +1,7 @@
 from settings import CLIENT_TOKEN
 import discord
-from mdd.top import get_top_from_db, get_wrs
-from mdd.user import get_user_data
+from mdd.top import get_top, get_top_from_db, get_wrs
+from mdd.user import get_user_times, get_overall_user_stats
 from ws.maps import get_random_map, get_map_data
 from middleware.emojis import main as ej
 from middleware.players import main as plyr
@@ -32,7 +32,7 @@ async def on_message(message):
             try:
                 args = message.content.split(' ')[1:]
                 top, map_name, physics = args if len(args) == 3 else ['10'] + args
-                top_data = get_top_from_db(top, map_name, physics)
+                top_data = get_top(top, map_name, physics)
                 top_data['fields']['countries'] = ej.turn_country_ids_to_emojis(top_data['fields']['countries'])
                 top_data['fields']['players'] = plyr.format_player_flags(top_data['fields']['players'],
                                                                               top_data['fields'].pop('countries'))
@@ -50,7 +50,14 @@ async def on_message(message):
             try:
                 args = message.content.split(' ')[1:]
                 map_name, physics = (args[0], args[1] + '-run') if len(args) == 2 else args + ['all']
-                msg = get_user_data(discord_id, map_name, physics)
+                msg = get_user_times(discord_id, map_name, physics)
+            except Exception:
+                msg = "Huh? `usage: !myt <map> <physics(opt)>`"
+        elif cmd == '!mystats':
+            try:
+                stats_data = get_overall_user_stats(discord_id)
+                stats_embed = emb.create_stats_embed(stats_data)
+                return await message.channel.send(mention, embed=stats_embed)
             except Exception:
                 msg = "Huh? `usage: !myt <map> <physics(opt)>`"
         elif cmd == '!random':
