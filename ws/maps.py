@@ -1,24 +1,39 @@
 import requests
 from bs4 import BeautifulSoup
-import math as m
 from random import randint
+from settings import CONN_STRING
+from sqlalchemy import create_engine
 
 
 def get_random_map():
-    maps_per_page = 50
-    num_maps = 11251 # hard coded for speed
-    max_page = m.ceil(num_maps/maps_per_page)
-    page_num = randint(1, max_page)
-    entry_num = randint(1, maps_per_page)
-
-    # Scrape random entry at random page
-    url = f"http://ws.q3df.org/maps/?map=&fo=2&mo=1&auf=2&show=50&page={page_num}"
-    r = requests.get(url)
-    soup = BeautifulSoup(r.text, 'html.parser')
-    entry = soup.find('table', attrs={'id': 'maps_table'}).find_all('tr')[entry_num]
-    map_name = entry.find_all('td')[2].text.strip('\n')
-
-    return map_name
+    num_maps = 9251
+    random_row = randint(1, num_maps)
+    db = create_engine(CONN_STRING)
+    with db.connect() as conn:
+        # Read
+        select_statement = "SELECT map_nm, author, map_desc, rel_dt, phys_cd_str, func_cd_str, weap_cd_str, " \
+                           "item_cd_str, func_cd_str " \
+                           "FROM ws_maps " \
+                           f"LIMIT 1 OFFSET {random_row}"
+        result_set = conn.execute(select_statement)
+        for r in result_set:
+            map_name = r.map_nm
+            url = f"http://ws.q3df.org/map/{map_name}/"
+            map_data = dict()
+            map_data['name'] = map_name
+            map_data['levelshot_url'] = f"https://ws.q3df.org/images/levelshots/512x384/{map_name}.jpg?fallback=1"
+            map_data['url'] = url
+            fields = dict()
+            fields['Author'] = r.author
+            fields['Description'] = r.map_desc
+            fields['Release Date'] = str(r.rel_dt)
+            fields['Physics'] = r.phys_cd_str
+            opt_fields = {"Weapons": r.weap_cd_str, "Items": r.item_cd_str, "Functions": r.func_cd_str}
+            opt_fields = {key: val for key, val in opt_fields.items() if val != None}  # remove None
+            fields['optional'] = opt_fields
+            map_data['fields'] = fields
+            map_data = {key: val for key, val in map_data.items() if val != None}  # remove None
+            return map_data
 
 
 def get_map_data(map_name):

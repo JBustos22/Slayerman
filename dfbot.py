@@ -15,6 +15,7 @@ client = discord.Client()
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
+    await client.change_presence(activity=discord.Game("!help"))
 
 
 @client.event
@@ -62,8 +63,7 @@ async def on_message(message):
                 msg = "Huh? `usage: !myt <map> <physics(opt)>`"
         elif cmd == '!random':
             try:
-                map_name = get_random_map()
-                map_data = get_map_data(map_name)
+                map_data = get_random_map()
                 emoted_fields = await ej.turn_to_custom_emojis(guild=message.guild, **map_data['fields']['optional'])
                 map_data['fields']['optional'] = emoted_fields
                 map_embed = emb.create_map_embed(map_data)
@@ -96,7 +96,8 @@ async def on_message(message):
                     "Usage: !mapinfo <map>```\n"
             return await message.channel.send('{id}\n{message}'.format(id=mention, message=msg))
         else:
-            msg = 'Command not recognized. use !help for a list of commands.'
+            return
         await message.channel.send('{id}\n{message}'.format(id=mention, message=msg))
+
 
 client.run(CLIENT_TOKEN if len(sys.argv) == 1 else sys.argv[1])
