@@ -63,7 +63,8 @@ async def on_message(message):
                 msg = "Huh? `usage: !myt <map> <physics(opt)>`"
         elif cmd == '!random':
             try:
-                map_data = get_random_map()
+                args = message.content.split(' ')[1:]
+                map_data = get_random_map(args)
                 emoted_fields = await ej.turn_to_custom_emojis(guild=message.guild, **map_data['fields']['optional'])
                 map_data['fields']['optional'] = emoted_fields
                 map_embed = emb.create_map_embed(map_data)
