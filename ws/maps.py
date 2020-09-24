@@ -42,8 +42,7 @@ def get_map_data(map_name):
     soup = BeautifulSoup(r.text, 'html.parser')
     map_data = dict()
     map_data['name'] = map_name
-    map_data['levelshot_url'] = 'https://ws.q3df.org'\
-                            + soup.find('img', attrs={'id': 'mapdetails_levelshot'}).attrs['srcset']
+    map_data['levelshot_url'] = f"https://ws.q3df.org/images/levelshots/512x384/{map_name}.jpg?fallback=1"
     map_data['url'] = url
     map_data['fields'] = get_map_fields(soup)
 

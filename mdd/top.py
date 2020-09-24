@@ -73,6 +73,7 @@ def get_top_from_db(top_num: str, map_name: str, physics: str):
 
 def get_wrs(map_name: str):
     db = create_engine(CONN_STRING)
+    map_name = map_name.lower()
 
     with db.connect() as conn:
         # Read
