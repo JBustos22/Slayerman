@@ -39,7 +39,7 @@ To install requirements, simply do:
 
 8. Right click the Defrag database, Restore...
 
-9. Navigate to this repo's folder, select mdd.db **(Note: you may have to select 'Format: all files' for this file to be visible)**
+9. Navigate to this repo's folder, select df.db **(Note: you may have to select 'Format: all files' for this file to be visible)**
      * Click Restore
 
 10. Once finished, confirm success by checking that there is an table named 'users_ids' under Defrag -> Schemas -> Tables
