@@ -8,8 +8,6 @@ from middleware.players import main as plyr
 from middleware.embeds import main as emb
 import sys
 
-import traceback
-
 
 client = discord.Client()
 
@@ -72,7 +70,6 @@ async def on_message(message):
                 map_embed = emb.create_map_embed(map_data)
                 return await message.channel.send(mention + ' Random map:', embed=map_embed)
             except:
-                print(traceback.format_exc())
                 msg = "Huh? `usage: !random`"
         elif cmd == '!mapinfo':
             try:
