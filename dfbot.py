@@ -32,11 +32,19 @@ async def on_message(message):
         if cmd == '!top':
             try:
                 args = message.content.split(' ')[1:]
-                top, map_name, physics = args if len(args) == 3 else ['10'] + args
-                top_data = get_top(top, map_name, physics)
-                top_data['fields']['countries'] = ej.turn_country_ids_to_emojis(top_data['fields']['countries'])
-                top_data['fields']['players'] = plyr.format_player_flags(top_data['fields']['players'],
-                                                                              top_data['fields'].pop('countries'))
+                top, physics = (5, None)
+
+                if len(args) == 1:
+                    map_name = args[0]
+                elif len(args) == 2:
+                    if args[0].isdecimal():
+                        top, map_name = args
+                    else:
+                        map_name, physics = args
+                else:
+                    top, map_name, physics = args
+
+                top_data = get_top_from_db(top, map_name, physics)
                 top_embed = emb.create_top_embed(top_data)
                 return await message.channel.send(mention, embed=top_embed)
             except Exception as e:
