@@ -33,43 +33,44 @@ def get_top(top_num: str, map_name: str, physics: str):
     top_data['fields'] = top_fields
     return top_data
 
-
-def get_top_from_db(top_num: str, map_name: str, physics: str):
-    physics_num = {'vq3': '0', 'cpm': '1'}[physics]
+def get_top_from_db(top_num: str, map_name: str, physics: str=None):
     top_num = abs(int(top_num))
-    if top_num > 15:
-        top_num = 15
-    physics = physics + "-run" if physics == "cpm" else "vq3-run"
-    recs_url = f'https://q3df.org/records/details?map={map_name}&mode=-1&physic={physics_num}'
-    top_data = {'top_num': top_num, 'map_name': map_name, 'physics': physics, 'url': recs_url}
-    top_fields = {
-        'countries': [],
-        'players': [],
-        'times': [],
-        'ranks': []
-    }
+    recs_url = f'https://q3df.org/records/details?map={map_name}&mode=-1'
 
     db = create_engine(CONN_STRING)
 
     with db.connect() as conn:
-        # Read
-        select_statement = "select country, player_name, time, player_pos, total_times " \
-                           "from mdd_records_ranked " \
-                           "where map_name=%s " \
-                           "and physics=%s " \
-                           "order by player_pos " \
-                           "limit %s"
-        replace_vars = (map_name, physics, str(top_num))
+        recs = []
+
+        if physics == None:
+            query_where = "WHERE map_name=%s"
+            replace_vars = (map_name)
+        else:
+            if physics in ["vq3", "cpm"]:
+                physics += "-run"
+
+            query_where = "WHERE map_name=%s AND physics=%s"
+            replace_vars = (map_name, physics)
+
+        select_statement = "SELECT country, player_name, time, player_pos, total_times, physics " \
+                           "FROM mdd_records_ranked " \
+                           f"{query_where} " \
+                           "ORDER by physics ASC, player_pos ASC"
         result_set = conn.execute(select_statement, replace_vars)
+
         for r in result_set:
-            top_fields['players'].append(" " + r.player_name)
-            top_fields['countries'].append(r.country.lower())
-            top_fields['times'].append(r.time)
-            top_fields['ranks'].append(f"{r.player_pos}/{r.total_times}")
+            if r.player_pos <= top_num:
+                rec_obj = {
+                    "country" : r.country.lower(),
+                    "player" : r.player_name,
+                    "time" : r.time,
+                    "rank" : f"{r.player_pos}/{r.total_times}",
+                    "physics" : r.physics.replace("-run", "")
+                }
+                recs.append(rec_obj)
 
-    top_data['fields'] = top_fields
+    top_data = {'top_num': top_num, 'map_name': map_name, 'url': recs_url, "recs" : recs}
     return top_data
-
 
 def get_wrs(map_name: str):
     db = create_engine(CONN_STRING)
