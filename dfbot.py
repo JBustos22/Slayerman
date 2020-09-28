@@ -82,19 +82,23 @@ async def on_message(message):
             except Exception as e:
                 msg = "Huh? `usage: !mapinfo <map>`"
         elif cmd == '!help':
-            msg = "\n**top**\n```" \
+            msg = "```---- !top\n" \
                     "Description: Get list of top times on a given map and physics.\n" \
-                    "Usage: !top <[1-15](default 10)> <map> <physics>```\n" \
-                    "**myt**\n```" \
-                    "Description: Get your times on a given map and physics. " \
+                    "Usage: !top <[1-15](default 10)> <map> <physics>```" \
+                    "```---- !myt\n" \
+                    "Description: Get your times on a given map and physics.\n" \
                     "Both physics are searched if not specified.\n" \
-                    "Usage: !myt <map> <physics(opt)>```\n" \
-                    "**random**\n```" \
-                    "Description: Generate a random map.\n" \
-                    "Usage: !random (more params to come)```\n" \
-                    "**mapinfo**\n```" \
+                    "Usage: !myt <map> <physics(opt)>```" \
+                    "```---- !mystats\n" \
+                    "Description: Display various online stats about yourself.\n" \
+                    "Usage: !mystats```" \
+                    "```---- !mapinfo\n" \
                     "Description: Get detailed map data.\n" \
-                    "Usage: !mapinfo <map>```\n"
+                    "Usage: !mapinfo <map>```" \
+                    "```---- !random\n" \
+                    "Description: Present a random map.\n" \
+                    "Usage: !random <args(opt)>\n" \
+                    "Arguments: slick, strafe, weapon, long, good```"
             return await message.channel.send('{id}\n{message}'.format(id=mention, message=msg))
         else:
             return
