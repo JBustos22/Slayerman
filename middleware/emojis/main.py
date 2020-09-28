@@ -5,7 +5,7 @@ def turn_country_ids_to_emojis(country_id_list):
     country_emoji_list = []
     for country_id in country_id_list:
         country_id = country_id.lower()
-        emoji_string = f":flag_{country_id}:" if country_id != 'null' else ':flag_??:'
+        emoji_string = f":flag_{country_id}:" if country_id not in ('null', '') else ':flag_??:'
         country_emoji_list.append(emoji_string)
     return country_emoji_list
 
