@@ -72,6 +72,7 @@ def get_top_from_db(top_num: str, map_name: str, physics: str=None):
     top_data = {'top_num': top_num, 'map_name': map_name, 'url': recs_url, "recs" : recs}
     return top_data
 
+
 def get_wrs(map_name: str):
     db = create_engine(CONN_STRING)
     map_name = map_name.lower()

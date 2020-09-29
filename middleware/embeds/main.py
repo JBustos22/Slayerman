@@ -28,6 +28,7 @@ def create_top_embed(top_data: dict):
         top_embed.add_field(name=f"Records ({physics.upper()})", value=table, inline=False)
     return top_embed
 
+
 def format_recs(recs):
     max_value_lengths = {}
 
@@ -49,6 +50,7 @@ def format_recs(recs):
                 rec[key] += " " * (max_value_lengths[key] - len(rec[key]))
 
     return recs
+
 
 def create_map_embed(map_data: dict):
     map_name, map_url, map_levelshot_url = [map_data[datum] for datum in ['name', 'url', 'levelshot_url']]
@@ -83,9 +85,10 @@ def create_map_embed(map_data: dict):
 
 def create_stats_embed(stats_data):
     # Add fields
+    physics = stats_data.pop('physics') if 'physics' in stats_data else 'Overall'
     id, name, country = [stats_data.pop(datum) for datum in ['player_id', 'player_name', 'country']]
     country_string = turn_country_ids_to_emojis([country])[0].replace("flag_??", "pirate_flag")
-    title = f"{country_string} {name} | Overall Statistics"
+    title = f"{country_string} {name} | {physics} Statistics"
     author = 'mDd records'
     url = f"https://q3df.org/profil?id={id}"
     stats_embed = Embed(title=title, url=url, color=Colour(0x9FC1E4))
