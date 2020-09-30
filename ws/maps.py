@@ -22,19 +22,21 @@ def get_random_map(modes=[]):
             QUERY_PARAMS.append("map_nm IN (SELECT DISTINCT map_name FROM mdd_records_ranked WHERE player_pos = 1 AND time_seconds > 150.0 AND physics = 'cpm-run')")
         if "good" in modes:
             # Blacklist
+            # Friendly reminder that all % wildcards must be doubled
+            # to avoid python tomfoolery
             blacklist = [
-                "nice%",
-                "igoodmap%",
-                "moko%",
-                "marvin%",
-                "%gvn%",
-                "baulo%",
-                "govno%",
-                "%wesp%",
-                "%ass%",
-                "%fag%",
-                "%shit%",
-                "line#%"
+                "nice%%",
+                "igoodmap%%",
+                "moko%%",
+                "marvin%%",
+                "%%gvn%%",
+                "baulo%%",
+                "govno%%",
+                "%%wesp%%",
+                "%%ass%%",
+                "%%fag%%",
+                "%%shit%%",
+                "line#%%"
             ]
 
             blacklist_s = " AND ".join(f"map_nm NOT LIKE '{x}'" for x in blacklist)
