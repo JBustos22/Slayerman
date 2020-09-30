@@ -23,20 +23,21 @@ def get_random_map(modes=[]):
         if "good" in modes:
             # Blacklist
             blacklist = [
-                "nice",
-                "igoodmap",
-                "moko",
-                "marvin",
-                "gvn",
-                "baulo",
-                "govno",
-                "wesp",
-                "ass",
-                "fag",
-                "shit"
+                "nice%",
+                "igoodmap%",
+                "moko%",
+                "marvin%",
+                "%gvn%",
+                "baulo%",
+                "govno%",
+                "%wesp%",
+                "%ass%",
+                "%fag%",
+                "%shit%",
+                "line#%"
             ]
 
-            blacklist_s = " AND ".join(f"map_nm NOT LIKE '%%{x}%%'" for x in blacklist)
+            blacklist_s = " AND ".join(f"map_nm NOT LIKE '{x}'" for x in blacklist)
 
             # 50 Records (caveat: total_times is per physics, so maybe a lower value of 35-40 is better here for CPM only)
             num_records_s = "map_nm IN (SELECT DISTINCT map_name FROM mdd_records_ranked WHERE total_times > 40)"
