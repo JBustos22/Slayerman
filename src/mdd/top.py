@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-from tabulate import tabulate
-from settings import DB_PASSWORD, DB_HOST
+# from tabulate import tabulate
+from settings import CONN_STRING
 from sqlalchemy import create_engine
 
 
@@ -33,61 +33,62 @@ def get_top(top_num: str, map_name: str, physics: str):
     top_data['fields'] = top_fields
     return top_data
 
-
-def get_top_from_db(top_num: str, map_name: str, physics: str):
-    physics_num = {'vq3': '0', 'cpm': '1'}[physics]
+def get_top_from_db(top_num: str, map_name: str, physics: str=None):
     top_num = abs(int(top_num))
-    if top_num > 15:
-        top_num = 15
-    physics = physics + "-run" if physics == "cpm" else "vq3-run"
-    recs_url = f'https://q3df.org/records/details?map={map_name}&mode=-1&physic={physics_num}'
-    top_data = {'top_num': top_num, 'map_name': map_name, 'physics': physics, 'url': recs_url}
-    top_fields = {
-        'countries': [],
-        'players': [],
-        'times': [],
-        'ranks': []
-    }
+    recs_url = f'https://q3df.org/records/details?map={map_name}&mode=-1'
 
-    db_string = f"postgres://postgres:{DB_PASSWORD}@{DB_HOST}:5432/Defrag"
-    db = create_engine(db_string)
+    db = create_engine(CONN_STRING)
 
     with db.connect() as conn:
-        # Read
-        select_statement = "select country, player_name, time, player_pos, total_times " \
-                           "from mdd_records_ranked " \
-                           "where map_name=%s " \
-                           "and physics=%s " \
-                           "order by player_pos " \
-                           "limit %s"
-        replace_vars = (map_name, physics, str(top_num))
-        result_set = conn.execute(select_statement, replace_vars)
-        for r in result_set:
-            top_fields['players'].append(" " + r.player_name)
-            top_fields['countries'].append(r.country.lower())
-            top_fields['times'].append(r.time)
-            top_fields['ranks'].append(f"{r.player_pos}/{r.total_times}")
+        recs = []
 
-    top_data['fields'] = top_fields
+        if physics == None:
+            query_where = "WHERE map_name=%s"
+            replace_vars = (map_name)
+        else:
+            if physics in ["vq3", "cpm"]:
+                physics += "-run"
+
+            query_where = "WHERE map_name=%s AND physics=%s"
+            replace_vars = (map_name, physics)
+
+        select_statement = "SELECT country, player_name, time, player_pos, total_times, physics " \
+                           "FROM mdd_records_ranked " \
+                           f"{query_where} " \
+                           "ORDER by physics ASC, player_pos ASC"
+        result_set = conn.execute(select_statement, replace_vars)
+
+        for r in result_set:
+            if r.player_pos <= top_num:
+                rec_obj = {
+                    "country" : r.country.lower(),
+                    "player" : r.player_name,
+                    "time" : r.time,
+                    "rank" : f"{r.player_pos}/{r.total_times}",
+                    "physics" : r.physics.replace("-run", "")
+                }
+                recs.append(rec_obj)
+
+    top_data = {'top_num': top_num, 'map_name': map_name, 'url': recs_url, "recs" : recs}
     return top_data
 
 
 def get_wrs(map_name: str):
-    db_string = f"postgres://postgres:{DB_PASSWORD}@{DB_HOST}:5432/Defrag"
-    db = create_engine(db_string)
+    db = create_engine(CONN_STRING)
+    map_name = map_name.lower()
 
     with db.connect() as conn:
         # Read
-        select_statement = "select distinct on (physics) physics, player_name, time " \
+        select_statement = "select distinct on (physics) physics, country, player_name, time " \
                            "from mdd_records_ranked " \
                            "where map_name=%s " \
                            "and player_pos = 1 " \
                            "order by physics desc "
         replace_vars = (map_name,)
         result_set = conn.execute(select_statement, replace_vars)
-        rows = []
+        wr_data = {}
         for r in result_set:
-            player, time, physics = r.player_name, r.time, r.physics.replace('-run', '')
-            rows.append([physics, player, time])
+            player, country, time, physics = r.player_name, r.country, r.time, r.physics.replace('-run', '')
+            wr_data[physics.replace('-run', '')] = {"country": country, "player": player, "time": time}
 
-    return f"```{tabulate(rows, headers=['Physics', 'Player', 'Time'])}```" if len(rows) > 0 else f"There are no runs on {map_name}."
+    return wr_data

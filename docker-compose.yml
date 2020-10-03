@@ -17,7 +17,13 @@ services:
     build:
       context: ./src
       dockerfile: Dockerfile
+    restart: always
     container_name: df_bot
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=defrag
+      - POSTGRES_DB=Defrag
+      - CLIENT_TOKEN=${CLIENT_TOKEN}
     volumes:
       - ./src:/src
 

@@ -1,3 +1,7 @@
-DB_PASSWORD = "defrag"
-DB_HOST = "database"
-CLIENT_TOKEN = "NzU0Mzk3NTY1Mjg5NDk2NjE3.X10Jew.EjBzGnmsn25ZEdz9l5sMrnv0m_A"
+import os
+
+CLIENT_TOKEN = os.environ['CLIENT_TOKEN']
+DB_USER = os.environ['POSTGRES_USER']
+DB_PASSWORD = os.environ['POSTGRES_PASSWORD']
+DB_NAME = os.environ['POSTGRES_DB']
+CONN_STRING = f"postgres://postgres:{DB_PASSWORD}@{DB_USER}:5432/{DB_NAME}"
