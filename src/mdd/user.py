@@ -22,6 +22,7 @@ def get_user_times(discord_id: str, df_map: str, physics: str= 'all'):
             physics = r.physics
             date = r.timestamp.strftime("%m/%d/%Y")
             rows.append([rank, time, physics, date])
+        result_set.close()
         if len(rows) > 0:
             return f"```{tabulate(rows, headers=['Rank', 'Time', 'Physics', 'Date'])}```"
         else:
@@ -60,7 +61,8 @@ def get_overall_user_stats(discord_id):
                 stats_dict['total_world_records'] = f"{top1} ({round(top1/total_times * 100, 2)}%)"
                 stats_dict['total_top_3_times'] = f"{top3} ({round(top3 / total_times * 100, 2)}%)"
                 stats_dict['total_top_10_times'] = f"{top10} ({round(top10 / total_times * 100, 2)}%)"
-                return stats_dict
+            result_set.close()
+            return stats_dict
         raise Exception("No statistics found.")
 
 
@@ -127,7 +129,9 @@ def get_physics_user_stats(discord_id, physics_string):
                 stats_dict['world_records'] = f"{top1} ({round(top1_pc * 100, 2)}%)"
                 stats_dict['top_3_times'] = f"{top3} ({round(top3_pc * 100, 2)}%)"
                 stats_dict['top_10_times'] = f"{top10} ({round(top10_pc * 100, 2)}%)"
-                return stats_dict
+            result_set.close()
+            return stats_dict
+        result_set.close()
         raise Exception("No statistics found.")
 
 

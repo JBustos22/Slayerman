@@ -68,6 +68,7 @@ def get_top_from_db(top_num: str, map_name: str, physics: str=None):
                     "physics" : r.physics.replace("-run", "")
                 }
                 recs.append(rec_obj)
+        result_set.close()
 
     top_data = {'top_num': top_num, 'map_name': map_name, 'url': recs_url, "recs" : recs}
     return top_data
@@ -90,5 +91,5 @@ def get_wrs(map_name: str):
         for r in result_set:
             player, country, time, physics = r.player_name, r.country, r.time, r.physics.replace('-run', '')
             wr_data[physics.replace('-run', '')] = {"country": country, "player": player, "time": time}
-
+        result_set.close()
     return wr_data

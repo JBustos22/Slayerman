@@ -1,7 +1,7 @@
 version: '3'
 services:
   database:
-    image: "postgres:9.6"
+    image: "postgres:12.4"
     restart: always
     container_name: df_database
     environment:
@@ -23,6 +23,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=defrag
       - POSTGRES_DB=Defrag
+      - POSTGRES_ADDRESS=df_database
       - CLIENT_TOKEN=${CLIENT_TOKEN}
     volumes:
       - ./src:/src

@@ -66,6 +66,7 @@ def get_random_map(modes=[]):
 
             offset = randint(0, len(result_rows) - 1)
             r = result_rows[offset]
+            result_set.close()
 
         else:
             num_maps = 9251
@@ -78,6 +79,7 @@ def get_random_map(modes=[]):
                                f"LIMIT 1 OFFSET {offset}"
             result_set = conn.execute(select_statement)
             r = result_set.first()
+            result_set.close()
 
         map_name = r.map_nm
         url = f"http://ws.q3df.org/map/{map_name}/"
