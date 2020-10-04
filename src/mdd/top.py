@@ -33,6 +33,7 @@ def get_top(top_num: str, map_name: str, physics: str):
     top_data['fields'] = top_fields
     return top_data
 
+
 def get_top_from_db(top_num: str, map_name: str, physics: str=None):
     top_num = abs(int(top_num))
     recs_url = f'https://q3df.org/records/details?map={map_name}&mode=-1'
