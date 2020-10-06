@@ -12,7 +12,13 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.sql import func, select, and_
 from sqlalchemy.orm import sessionmaker
 
-from settings import CONN_STRING
+try:
+    from settings import CONN_STRING
+except:
+    print("WARNING: Could not import CONN_STRING from settings in mdd_scrape.py. Setting default value.")
+    import keyring
+    DB_PASSWORD = keyring.get_password('db_password', 'postgres')
+    CONN_STRING = f"postgres://postgres:{DB_PASSWORD}@localhost:5432/Defrag"
 
 # pylint: disable=E1101
 
@@ -275,3 +281,6 @@ def crawl_records():
         raise
     finally:
         db_session.close()
+
+if __name__ == "__main__":
+    crawl_records()
