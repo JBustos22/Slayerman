@@ -123,7 +123,7 @@ async def on_message(message):
                     "Both physics are searched if not specified.\n" \
                     "Usage: !myt <map> <physics(opt)>```" \
                     "```---- !mystats\n" \
-                    "Description: Display various online stats about yourself. Defaults to overall if no physics\n" \
+                    "Description: Display various online stats about yourself. Defaults to overall if no physics.\n" \
                     "Usage: !mystats <physics>```" \
                     "```---- !mapinfo\n" \
                     "Description: Get detailed map data.\n" \
@@ -131,7 +131,11 @@ async def on_message(message):
                     "```---- !random\n" \
                     "Description: Present a random map.\n" \
                     "Usage: !random <args(opt)>\n" \
-                    "Arguments: slick, strafe, weapon, long, good```"
+                    "Arguments: slick, strafe, weapon, long, good```" \
+                    "```---- !update\n" \
+                    "Description: Updates a table. Commands sent during the update will be backlogged.\n" \
+                    "Usage: !update <table>\n" \
+                    "Arguments: mdd_records_ranked```"
             return await message.channel.send('{id}\n{message}'.format(id=mention, message=msg))
         else:
             return
