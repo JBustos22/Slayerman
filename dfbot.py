@@ -1,6 +1,6 @@
 from settings import CLIENT_TOKEN
 import discord
-from mdd import top, user as usr
+from mdd import top, user as usr, mdd_scrape
 from ws import maps
 from middleware.emojis import main as ej
 from middleware.embeds import main as emb
@@ -101,7 +101,19 @@ async def on_message(message):
                 return await message.channel.send(mention, embed=map_embed)
             except Exception as e:
                 msg = "Huh? `usage: !mapinfo <map>`"
+        elif cmd == "!update":
+            try:
+                args = message.content.split(' ')[1:]
 
+                for arg in args:
+                    if arg in ["mdd", "records", "mdd_records_ranked"]:
+                        temp_msg = await message.channel.send("Updating mdd_records_ranked...")
+                        mdd_scrape.crawl_records()
+                        await temp_msg.edit(content="Updated mdd_records_ranked!")
+
+                return
+            except Exception as e:
+                msg = "Huh? `usage: !update <table>`"
         elif cmd == '!help':
             msg = "```---- !top\n" \
                     "Description: Get list of top times on a given map and physics.\n" \
