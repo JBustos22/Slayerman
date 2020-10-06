@@ -107,12 +107,14 @@ async def on_message(message):
 
                 for arg in args:
                     if arg in ["mdd", "records", "mdd_records_ranked"]:
-                        temp_msg = await message.channel.send("Updating mdd_records_ranked...")
+                        await message.add_reaction("🔄")
                         mdd_scrape.crawl_records()
-                        await temp_msg.edit(content="Updated mdd_records_ranked!")
+                        await message.remove_reaction("🔄", client.user)
+                        await message.add_reaction("✅")
 
                 return
             except Exception as e:
+                await message.add_reaction("❌")
                 msg = "Huh? `usage: !update <table>`"
         elif cmd == '!help':
             msg = "```---- !top\n" \
