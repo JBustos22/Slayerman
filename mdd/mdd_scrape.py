@@ -243,7 +243,7 @@ def crawl_records():
                     "player_pos = sq2.player_pos, "\
                     "percent_rank = (cast(sq1.total_times as float) - cast(sq2.player_pos - 1 as float) ) / cast(sq1.total_times as float), "\
                     "user_bestranks_rank = sq2.user_bestranks_rank, "\
-                    "user_besttimes_rnka = sq2.user_besttimes_rnka "\
+                    "user_besttimes_rank = sq2.user_besttimes_rank "\
                 "FROM "\
                     "( "\
                         "SELECT "\
@@ -263,7 +263,7 @@ def crawl_records():
                             "s.player_id, "\
                             "RANK() OVER(PARTITION BY s.map_name, s.physics ORDER BY time_seconds) AS player_pos, "\
                             "ROW_NUMBER() OVER (PARTITION BY player_id, physics ORDER BY (CAST(total_times AS float) - CAST(player_pos - 1 AS float) ) / CAST(total_times AS float) DESC, total_times DESC) AS user_bestranks_rank, "\
-                            "ROW_NUMBER() OVER (PARTITION BY player_id, physics ORDER BY (CAST(player_pos AS float) / CAST(total_times AS float)) ASC, total_times DESC) AS user_besttimes_rnka "\
+                            "ROW_NUMBER() OVER (PARTITION BY player_id, physics ORDER BY (CAST(player_pos AS float) / CAST(total_times AS float)) ASC, total_times DESC) AS user_besttimes_rank "\
                         "FROM "\
                             "mdd_records_ranked s "\
                     ") as sq2 "\
