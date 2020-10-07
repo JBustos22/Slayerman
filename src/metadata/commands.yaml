@@ -1,0 +1,24 @@
+top:
+  description: 'Get list of top times on a given map and physics.'
+  usage: '!top <[1-15](default 10)> <map> <physics>'
+  arguments: 'None'
+myt:
+  description: 'Get your times on a given map and physics. Both physics are searched if not specified.'
+  usage: '!myt <map> <physics(opt)>'
+  arguments: 'None'
+mystats:
+  description: 'Display various online stats about yourself. Defaults to overall if no physics.'
+  usage: '!mystats <physics (opt)>'
+  arguments: 'None'
+mapinfo:
+  description: 'Get detailed map data.'
+  usage: '!mapinfo <map>'
+  arguments: 'None'
+random:
+  description: 'Present a random map.'
+  usage: '!random <args(opt)>'
+  arguments: 'slick, strafe, weapon, long, good'
+update:
+  description: 'Updates a table. Commands sent during the update will be backlogged.'
+  usage: '!update <table>'
+  arguments: 'mdd_records_ranked'

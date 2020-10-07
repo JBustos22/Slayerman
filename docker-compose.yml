@@ -1,0 +1,42 @@
+version: '3'
+services:
+  database:
+    image: "postgres:12.4"
+    restart: always
+    container_name: df_database
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=defrag
+      - POSTGRES_DB=Defrag
+    volumes:
+      - ./data:/data
+    ports:
+      - "5432:5432"
+
+  bot:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    restart: always
+    container_name: df_bot
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=defrag
+      - POSTGRES_DB=Defrag
+      - POSTGRES_ADDRESS=df_database
+      - CLIENT_TOKEN=${CLIENT_TOKEN}
+      - DFBOT_ENVIRONMENT=CONTAINER
+    volumes:
+      - ./src:/src
+
+  pgadmin:
+    image: "dpage/pgadmin4"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@defrag.com
+      - PGADMIN_DEFAULT_PASSWORD=defrag
+    container_name: pgadmin4
+    volumes:
+      - ./data:/data
+    ports:
+      - "8080:80"
+
