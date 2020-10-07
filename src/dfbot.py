@@ -1,11 +1,11 @@
-from src.settings import CLIENT_TOKEN
+from settings import CLIENT_TOKEN
 import discord
-from src.metadata import main as meta
-from src.mdd import top, user as usr
-from src.mdd import mdd_scrape
-from src.ws import maps
-from src.middleware.emojis import main as ej
-from src.middleware.embeds import main as emb
+from metadata import main as meta
+from mdd import top, user as usr
+from mdd import mdd_scrape
+from ws import maps
+from middleware.emojis import main as ej
+from middleware.embeds import main as emb
 import sys
 
 
