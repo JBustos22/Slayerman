@@ -1,9 +1,11 @@
-from settings import CLIENT_TOKEN
+from src.settings import CLIENT_TOKEN
 import discord
-from mdd import top, user as usr, mdd_scrape
-from ws import maps
-from middleware.emojis import main as ej
-from middleware.embeds import main as emb
+from src.metadata import main as meta
+from src.mdd import top, user as usr
+from src.mdd import mdd_scrape
+from src.ws import maps
+from src.middleware.emojis import main as ej
+from src.middleware.embeds import main as emb
 import sys
 
 
@@ -47,14 +49,14 @@ async def on_message(message):
                 top_embed = emb.create_top_embed(top_data)
                 return await message.channel.send(mention, embed=top_embed)
             except Exception as e:
-                msg = "Huh? `usage: !top <[1-15](default 10)> <map> <physics>`"
+                msg = f"Huh? `usage: {meta.get_usage('top')}`"
 
-        elif cmd == "!wrs":
-            try:
-                map_name = message.content.split(' ')[1]
-                msg = top.get_wrs(map_name)
-            except:
-                msg = "Huh? ``usage: !wrs <map>``"
+        # elif cmd == "!wrs":
+        #     try:
+        #         map_name = message.content.split(' ')[1]
+        #         msg = top.get_wrs(map_name)
+        #     except:
+        #         msg = f"Huh? `usage: {meta.get_usage('wrs')}`"
 
         elif cmd == '!myt':
             try:
@@ -62,7 +64,7 @@ async def on_message(message):
                 map_name, physics = (args[0], args[1] + '-run') if len(args) == 2 else args + ['all']
                 msg = usr.get_user_times(discord_id, map_name, physics)
             except Exception:
-                msg = "Huh? `usage: !myt <map> <physics(opt)>`"
+                msg = f"Huh? `usage: {meta.get_usage('myt')}`"
 
         elif cmd == '!mystats':
             try:
@@ -78,7 +80,7 @@ async def on_message(message):
                 if str(e) in ("Invalid physics.", "No statistics found."):
                     msg = e
                 else:
-                    msg = "Huh? `usage: !mystats <physics (otp)>`"
+                    msg = f"Huh? `usage: {meta.get_usage('mystats')}`"
 
         elif cmd == '!random':
             try:
@@ -89,7 +91,7 @@ async def on_message(message):
                 map_embed = emb.create_map_embed(map_data)
                 return await message.channel.send(mention + ' Random map:', embed=map_embed)
             except:
-                msg = "Huh? `usage: !random`"
+                msg = f"Huh? `usage: {meta.get_usage('random')}`"
 
         elif cmd == '!mapinfo':
             try:
@@ -100,7 +102,7 @@ async def on_message(message):
                 map_embed = emb.create_map_embed(map_data)
                 return await message.channel.send(mention, embed=map_embed)
             except Exception as e:
-                msg = "Huh? `usage: !mapinfo <map>`"
+                msg = f"Huh? `usage: {meta.get_usage('mapinfo')}`"
         elif cmd == "!update":
             try:
                 args = message.content.split(' ')[1:]
@@ -115,29 +117,9 @@ async def on_message(message):
                 return
             except Exception as e:
                 await message.add_reaction("❌")
-                msg = "Huh? `usage: !update <table>`"
+                msg = f"Huh? `usage: {meta.get_usage('update')}`"
         elif cmd == '!help':
-            msg = "```---- !top\n" \
-                    "Description: Get list of top times on a given map and physics.\n" \
-                    "Usage: !top <[1-15](default 10)> <map> <physics>```" \
-                    "```---- !myt\n" \
-                    "Description: Get your times on a given map and physics.\n" \
-                    "Both physics are searched if not specified.\n" \
-                    "Usage: !myt <map> <physics(opt)>```" \
-                    "```---- !mystats\n" \
-                    "Description: Display various online stats about yourself. Defaults to overall if no physics.\n" \
-                    "Usage: !mystats <physics>```" \
-                    "```---- !mapinfo\n" \
-                    "Description: Get detailed map data.\n" \
-                    "Usage: !mapinfo <map>```" \
-                    "```---- !random\n" \
-                    "Description: Present a random map.\n" \
-                    "Usage: !random <args(opt)>\n" \
-                    "Arguments: slick, strafe, weapon, long, good```" \
-                    "```---- !update\n" \
-                    "Description: Updates a table. Commands sent during the update will be backlogged.\n" \
-                    "Usage: !update <table>\n" \
-                    "Arguments: mdd_records_ranked```"
+            msg = meta.create_help_message()
             return await message.channel.send('{id}\n{message}'.format(id=mention, message=msg))
         else:
             return

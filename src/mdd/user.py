@@ -1,5 +1,5 @@
 from tabulate import tabulate
-from settings import CONN_STRING
+from src.settings import CONN_STRING
 from sqlalchemy import create_engine
 
 

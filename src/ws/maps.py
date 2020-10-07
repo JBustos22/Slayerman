@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from random import randint
-from settings import CONN_STRING
+from src.settings import CONN_STRING
 from sqlalchemy import create_engine
 
 
