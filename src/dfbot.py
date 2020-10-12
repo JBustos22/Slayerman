@@ -45,6 +45,9 @@ async def on_message(message):
                 else:
                     top_num, map_name, physics = args
 
+                # Broken capitalization across q3df.org and ws.q3df.org
+                map_name = map_name.lower()
+
                 top_data = top.get_top_from_db(top_num, map_name, physics)
                 top_embed = emb.create_top_embed(top_data)
                 return await message.channel.send(mention, embed=top_embed)
