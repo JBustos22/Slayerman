@@ -135,7 +135,7 @@ def get_physics_user_stats(physics_string, discord_id=None, mdd_id=None):
                                                                                             'top3_percent',
                                                                                             'top10_percent']]
                 stats_dict['average_percent_rank'] = round(stats_dict['average_percent_rank'] * 100, 2)
-                stats_dict['total_times'] = f"{top1} ({round(total_pc * 100, 2)}%)"
+                stats_dict['total_times'] = f"{total_times} ({round(total_pc * 100, 2)}%)"
                 stats_dict['world_records'] = f"{top1} ({round(top1_pc * 100, 2)}%)"
                 stats_dict['top_3_times'] = f"{top3} ({round(top3_pc * 100, 2)}%)"
                 stats_dict['top_10_times'] = f"{top10} ({round(top10_pc * 100, 2)}%)"
