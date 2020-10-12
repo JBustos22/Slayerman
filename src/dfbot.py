@@ -28,7 +28,6 @@ async def on_message(message):
         if not cmd[1:].isalnum():
             return
         discord_id = str(message.author)
-        mention = message.author.mention
 
         if cmd == '!top':
             try:
@@ -50,7 +49,7 @@ async def on_message(message):
 
                 top_data = top.get_top_from_db(top_num, map_name, physics)
                 top_embed = emb.create_top_embed(top_data)
-                return await message.channel.send(mention, embed=top_embed)
+                return await message.channel.send(embed=top_embed)
             except Exception as e:
                 msg = f"Huh? `usage: {meta.get_usage('top')}`"
 
@@ -74,16 +73,33 @@ async def on_message(message):
                 args = message.content.split(' ')[1:]
                 if len(args) > 0:
                     physics_string = args[0]
-                    stats_data = usr.get_physics_user_stats(discord_id, physics_string)
+                    stats_data = usr.get_physics_user_stats(discord_id=discord_id, physics_string=physics_string)
                 else:
-                    stats_data = usr.get_overall_user_stats(discord_id)
+                    stats_data = usr.get_overall_user_stats(discord_id=discord_id)
                 stats_embed = emb.create_stats_embed(stats_data)
-                return await message.channel.send(mention, embed=stats_embed)
+                return await message.channel.send(embed=stats_embed)
             except Exception as e:
                 if str(e) in ("Invalid physics.", "No statistics found."):
                     msg = e
                 else:
                     msg = f"Huh? `usage: {meta.get_usage('mystats')}`"
+
+        elif cmd == '!userstats':
+            try:
+                args = message.content.split(' ')[1:]
+                mdd_id = int(args[0])
+                if len(args) > 1:
+                    physics_string = args[1]
+                    stats_data = usr.get_physics_user_stats(physics_string, mdd_id=mdd_id)
+                else:
+                    stats_data = usr.get_overall_user_stats(mdd_id=mdd_id)
+                stats_embed = emb.create_stats_embed(stats_data)
+                return await message.channel.send(embed=stats_embed)
+            except Exception as e:
+                if str(e) in ("Invalid physics.", "No statistics found."):
+                    msg = e
+                else:
+                    msg = f"Huh? `usage: {meta.get_usage('userstats')}`"
 
         elif cmd == '!random':
             try:
@@ -92,7 +108,7 @@ async def on_message(message):
                 emoted_fields = await ej.turn_to_custom_emojis(guild=message.guild, **map_data['fields']['optional'])
                 map_data['fields']['optional'] = emoted_fields
                 map_embed = emb.create_map_embed(map_data)
-                return await message.channel.send(mention + ' Random map:', embed=map_embed)
+                return await message.channel.send(' Random map:', embed=map_embed)
             except:
                 msg = f"Huh? `usage: {meta.get_usage('random')}`"
 
@@ -103,7 +119,7 @@ async def on_message(message):
                 emoted_fields = await ej.turn_to_custom_emojis(guild=message.guild, **map_data['fields']['optional'])
                 map_data['fields']['optional'] = emoted_fields
                 map_embed = emb.create_map_embed(map_data)
-                return await message.channel.send(mention, embed=map_embed)
+                return await message.channel.send(embed=map_embed)
             except Exception as e:
                 msg = f"Huh? `usage: {meta.get_usage('mapinfo')}`"
         elif cmd == "!update":
@@ -123,10 +139,10 @@ async def on_message(message):
                 msg = f"Huh? `usage: {meta.get_usage('update')}`"
         elif cmd == '!help':
             msg = meta.create_help_message()
-            return await message.channel.send('{id}\n{message}'.format(id=mention, message=msg))
+            return await message.channel.send(msg)
         else:
             return
-        await message.channel.send('{id}\n{message}'.format(id=mention, message=msg))
+        await message.channel.send(msg)
 
 
 client.run(CLIENT_TOKEN if len(sys.argv) == 1 else sys.argv[1])

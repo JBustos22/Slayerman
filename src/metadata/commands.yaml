@@ -7,9 +7,13 @@ myt:
   usage: '!myt <map> <physics(opt)>'
   arguments: 'None'
 mystats:
-  description: 'Display various online stats about yourself. Defaults to overall if no physics.'
-  usage: '!mystats <physics (opt)>'
-  arguments: 'None'
+  description: 'Display various online stats about yourself. Defaults to overall if no physics provided.'
+  usage: '!mystats <args(opt)>'
+  arguments: 'vq3, cpm, vq3.1-7, cpm.1-7'
+userstats:
+  description: 'Display various online stats about a particular user. Defaults to overall if no physics provided.'
+  usage: '!userstats <mdd_id>'
+  arguments: 'vq3, cpm, vq3.1-7, cpm.1-7'
 mapinfo:
   description: 'Get detailed map data.'
   usage: '!mapinfo <map>'
