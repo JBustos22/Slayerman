@@ -29,11 +29,17 @@ def get_user_times(discord_id: str, df_map: str, physics: str= 'all'):
             return f"You have no such time(s) on this map"
 
 
-def get_overall_user_stats(discord_id):
+def get_overall_user_stats(discord_id=None, mdd_id=None):
     db = create_engine(CONN_STRING)
+    if discord_id is not None:
+        from_where = "FROM mdd_player_stats m JOIN discord_ids d ON m.player_id=d.mdd_id WHERE discord_id=%s"
+        replace_vars = (discord_id,)
+    else:
+        from_where = "FROM mdd_player_stats WHERE player_id=%s"
+        replace_vars = (mdd_id,)
     with db.connect() as conn:
         # Read
-        select_statement = "SELECT \
+        select_statement = f"SELECT \
                             country \
                             ,player_id \
                             ,player_name \
@@ -42,10 +48,8 @@ def get_overall_user_stats(discord_id):
                             ,SUM(total_world_recs) as total_world_records \
                             ,SUM(total_top3_recs) as total_top_3_times \
                             ,SUM(total_top10_recs) as total_top_10_times \
-                            FROM mdd_player_stats m JOIN discord_ids d ON m.player_id=d.mdd_id \
-                            WHERE discord_id=%s \
+                            {from_where} \
                             GROUP BY country, player_id, player_name"
-        replace_vars = (discord_id,)
         result_set = conn.execute(select_statement, replace_vars)
         if result_set.rowcount == 1:
             for row in result_set:
@@ -66,7 +70,7 @@ def get_overall_user_stats(discord_id):
         raise Exception("No statistics found.")
 
 
-def get_physics_user_stats(discord_id, physics_string):
+def get_physics_user_stats(physics_string, discord_id=None, mdd_id=None):
     db = create_engine(CONN_STRING)
     supported_physics = {
         'vq3' : 'vq3-run',
@@ -93,7 +97,15 @@ def get_physics_user_stats(discord_id, physics_string):
 
     with db.connect() as conn:
         # Read
-        select_statement = "SELECT country \
+        if discord_id is not None:
+            from_where = "FROM mdd_player_stats m JOIN discord_ids d ON m.player_id=d.mdd_id " \
+                         "WHERE discord_id=%s AND physics=%s"
+            replace_vars = (discord_id, physics)
+        else:
+            from_where = "FROM mdd_player_stats WHERE player_id=%s AND physics=%s"
+            replace_vars = (mdd_id, physics)
+
+        select_statement = f"SELECT country \
                            ,player_id \
                            ,player_name \
                            ,physics \
@@ -107,9 +119,7 @@ def get_physics_user_stats(discord_id, physics_string):
                            ,top3_recs_pct as top3_percent \
                            ,total_top10_recs as top_10_times \
                            ,top10_recs_pct as top10_percent \
-                           FROM mdd_player_stats m JOIN discord_ids d ON m.player_id=d.mdd_id \
-                           WHERE discord_id=%s AND physics=%s"
-        replace_vars = (discord_id, physics)
+                           {from_where}"
         result_set = conn.execute(select_statement, replace_vars)
         if result_set.rowcount == 1:
             for row in result_set:
