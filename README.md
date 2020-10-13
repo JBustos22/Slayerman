@@ -42,7 +42,7 @@ To install requirements, simply do:
 9. Navigate to this repo's folder, select df.db **(Note: you may have to select 'Format: all files' for this file to be visible)**
      * Click Restore
 
-10. Once finished, confirm success by checking that there is an table named 'users_ids' under Defrag -> Schemas -> Tables
+10. Once finished, confirm success by checking that there is an table named 'discord_ids' under Defrag -> Schemas -> Tables
 
 11. If success, store your database password in keyring by running `python` in the project's environment and doing:
     ```

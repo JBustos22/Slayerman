@@ -1,7 +1,7 @@
 from settings import CLIENT_TOKEN
 import discord
 from metadata import main as meta
-from mdd import top, user as usr
+from mdd import records as recs, user as usr
 from mdd import mdd_scrape
 from ws import maps
 from middleware.emojis import main as ej
@@ -47,7 +47,7 @@ async def on_message(message):
                 # Broken capitalization across q3df.org and ws.q3df.org
                 map_name = map_name.lower()
 
-                top_data = top.get_top_from_db(top_num, map_name, physics)
+                top_data = recs.get_top_from_db(top_num, map_name, physics)
                 top_embed = emb.create_top_embed(top_data)
                 return await message.channel.send(embed=top_embed)
             except Exception as e:

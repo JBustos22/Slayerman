@@ -1,9 +1,20 @@
+"""
+Handles data processing for commands related to mdd and discord users
+"""
+
 from tabulate import tabulate
 from settings import CONN_STRING
 from sqlalchemy import create_engine
 
 
-def get_user_times(discord_id: str, df_map: str, physics: str= 'all'):
+def get_user_times(discord_id: str, df_map: str, physics: str = 'all'):
+    """
+    Retrieves a discord user's times from the local mdd database store.
+    :param discord_id: discord ID of the user who called the command.
+    :param df_map: the name of the map for which the user is requesting their times.
+    :param physics: if provided, the physics for which the user is requesting their times.
+    :return: a tabulated result of times filtered by the user's inputs.
+    """
     db = create_engine(CONN_STRING)
 
     with db.connect() as conn:
@@ -16,27 +27,37 @@ def get_user_times(discord_id: str, df_map: str, physics: str= 'all'):
         replace_vars = (discord_id, df_map, physics) if physics != 'all' else (discord_id, df_map)
         result_set = conn.execute(select_statement, replace_vars)
         rows = list()
-        for r in result_set:
-            rank = f"{r.player_pos}/{r.total_times}"
+        for r in result_set:  # for each time returned (can be multiple if the user did not specify physics)
+            rank = f"{r.player_pos}/{r.total_times}"  # formats the user's position as <place>/<total times>
             time = r.time
             physics = r.physics
-            date = r.timestamp.strftime("%m/%d/%Y")
+            date = r.timestamp.strftime("%m/%d/%Y")  # omits the hr:min:sec portion of the date for brevity
             rows.append([rank, time, physics, date])
         result_set.close()
         if len(rows) > 0:
-            return f"```{tabulate(rows, headers=['Rank', 'Time', 'Physics', 'Date'])}```"
+            return f"```{tabulate(rows, headers=['Rank', 'Time', 'Physics', 'Date'])}```"  # tabulates the list of rows
         else:
             return f"You have no such time(s) on this map"
 
 
-def get_overall_user_stats(discord_id=None, mdd_id=None):
+def get_overall_user_stats(discord_id: str = None, mdd_id: int = None):
+    """
+    Retrieves an user's mdd statistics across all physics.
+    :param discord_id: The calling user's discord id, used when calling !mystats
+    :param mdd_id: The desired user's mdd id, used when calling !userstats (not necessarily the calling user's id)
+    :return: A dictionary of statistical data to be processed into an embed.
+    """
     db = create_engine(CONN_STRING)
+
+    # Depending on whether the user is user !mystats or !userstats, the FROM and WHERE clauses will differ.
     if discord_id is not None:
+        # if using !mystats, the calling user must have an entry in the discord_ids table, hence the join.
         from_where = "FROM mdd_player_stats m JOIN discord_ids d ON m.player_id=d.mdd_id WHERE discord_id=%s"
         replace_vars = (discord_id,)
     else:
         from_where = "FROM mdd_player_stats WHERE player_id=%s"
         replace_vars = (mdd_id,)
+
     with db.connect() as conn:
         # Read
         select_statement = f"SELECT \
@@ -59,7 +80,7 @@ def get_overall_user_stats(discord_id=None, mdd_id=None):
                 days, hours, minutes, secs = process_total_seconds_to_readable(total_time)
                 stats_dict['total_time_logged'] = f"{days} days, {hours} hours, {minutes} minutes, and {secs} seconds"
 
-                # percentage calculations
+                # percentage calculations. I.e. what percentage of your times are world records, top3, and top 10.
                 total_times, top1, top3, top10 = [stats_dict[datum] for datum in ['total_times', 'total_world_records',
                                                                'total_top_3_times', 'total_top_10_times']]
                 stats_dict['total_world_records'] = f"{top1} ({round(top1/total_times * 100, 2)}%)"
@@ -70,8 +91,18 @@ def get_overall_user_stats(discord_id=None, mdd_id=None):
         raise Exception("No statistics found.")
 
 
-def get_physics_user_stats(physics_string, discord_id=None, mdd_id=None):
+def get_physics_user_stats(physics_string: str, discord_id: str = None, mdd_id: int = None):
+    """
+    Retrieves an user's mdd statistics for a particular physics
+    :param physics_string: The physics for which the statistics are being requested
+    :param discord_id: The calling user's discord id. Used when calling !mystats <physics>
+    :param mdd_id: The requested user's mdd_id. Used when calling !userstats <physics>
+    :return: A dictionary of statistical data to be processed into an embed.
+    """
     db = create_engine(CONN_STRING)
+
+    # Supported physics dict. The keys are available physics arguments in discord, the values are the corresponding
+    # physics string representations in the database.
     supported_physics = {
         'vq3' : 'vq3-run',
         'vq3.1' : 'vq3-ctf1',
@@ -96,7 +127,7 @@ def get_physics_user_stats(physics_string, discord_id=None, mdd_id=None):
         raise Exception("Invalid physics.")
 
     with db.connect() as conn:
-        # Read
+        # FROM and WHERE clauses depend on usage of discord id or mdd id
         if discord_id is not None:
             from_where = "FROM mdd_player_stats m JOIN discord_ids d ON m.player_id=d.mdd_id " \
                          "WHERE discord_id=%s AND physics=%s"
@@ -145,7 +176,12 @@ def get_physics_user_stats(physics_string, discord_id=None, mdd_id=None):
         raise Exception("No statistics found.")
 
 
-def process_total_seconds_to_readable(total_time):
+def process_total_seconds_to_readable(total_time: int):
+    """
+    Helper function to break apart a total-seconds value into components (i.e. days, hours, minutes, seconds)
+    :param total_time: total seconds value
+    :return: days, hours, minutes, and seconds corresponding to the total seconds value
+    """
     day = int(total_time // (24 * 3600))
     total_time = total_time % (24 * 3600)
     hour = int(total_time // 3600)

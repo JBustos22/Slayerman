@@ -282,5 +282,6 @@ def crawl_records():
     finally:
         db_session.close()
 
+
 if __name__ == "__main__":
     crawl_records()
