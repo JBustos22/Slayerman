@@ -21,7 +21,7 @@ mapinfo:
 random:
   description: 'Present a random map.'
   usage: '!random <args(opt)>'
-  arguments: 'slick, strafe, weapon, long, good'
+  arguments: 'slick, strafe, weapon, long, deluxe'
 update:
   description: 'Updates a table. Commands sent during the update will be backlogged.'
   usage: '!update <table>'

@@ -1,3 +1,5 @@
+""" Handles data retrieval and processing of Worldspawn map data """
+
 import requests
 from bs4 import BeautifulSoup
 from random import randint
@@ -6,6 +8,11 @@ from sqlalchemy import create_engine
 
 
 def get_random_map(modes=[]):
+    """
+    Fetches a random map corresponding with mode filters if provided
+    :param modes: Descriptive filters to narrow down the search, i.e strafe for strafe-only, etc.
+    :return: Map data dictionary corresponding to the resulting map
+    """
     db = create_engine(CONN_STRING)
 
     with db.connect() as conn:
@@ -20,7 +27,7 @@ def get_random_map(modes=[]):
         if "long" in modes:
             # TODO: How to make sure that all physics are long?
             QUERY_PARAMS.append("map_nm IN (SELECT DISTINCT map_name FROM mdd_records_ranked WHERE player_pos = 1 AND time_seconds > 150.0 AND physics = 'cpm-run')")
-        if "good" in modes:
+        if "deluxe" in modes:
             # Blacklist
             # Friendly reminder that all % wildcards must be doubled
             # to avoid python tomfoolery
@@ -100,7 +107,12 @@ def get_random_map(modes=[]):
         return map_data
 
 
-def get_map_data(map_name):
+def get_map_data(map_name: str):
+    """
+    Retrieves descriptive data about a specific map
+    :param map_name: The name of the map
+    :return: Map data dictionary containing the map's information, to be later formatted into an embed
+    """
     url = f"http://ws.q3df.org/map/{map_name}/"
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
@@ -114,6 +126,11 @@ def get_map_data(map_name):
 
 
 def get_map_fields(map_soup):
+    """
+    Retrieves map data that will live in the embed as a 'field'. Some of these can be optional (like 'Weapons')
+    :param map_soup: BS4 soup object containing the map page's html from Worldspawn
+    :return: A dictionary of fields and the data that will go under each of them
+    """
     fields = dict()
     map_data_table = map_soup.find("table", {"id": "mapdetails_data_table"})
 
