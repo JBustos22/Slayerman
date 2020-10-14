@@ -91,7 +91,7 @@ def create_map_embed(map_data: dict):
     # Add world record data if map has the Timer function
     if 'Functions' in optional_fields and 'timer' in optional_fields['Functions'].lower():
         try:
-            from records.top import get_wrs
+            from mdd.records import get_wrs
             wr_data = get_wrs(map_name)
             for physics, wr_entry in wr_data.items():
                 country_string = turn_country_ids_to_emojis([wr_entry['country']])[0].replace("flag_??", "pirate_flag")

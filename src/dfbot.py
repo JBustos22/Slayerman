@@ -105,7 +105,7 @@ async def on_message(message):
             try:
                 args = message.content.split(' ')[1:]
                 map_data = maps.get_random_map(args)
-                emoted_fields = await ej.turn_to_custom_emojis(guild=message.guild, **map_data['fields']['optional'])
+                emoted_fields = ej.turn_to_custom_emojis(guild=message.guild, **map_data['fields']['optional'])
                 map_data['fields']['optional'] = emoted_fields
                 map_embed = emb.create_map_embed(map_data)
                 return await message.channel.send(' Random map:', embed=map_embed)
@@ -116,7 +116,7 @@ async def on_message(message):
             try:
                 map_name = message.content.split(' ')[1]
                 map_data = maps.get_map_data(map_name)
-                emoted_fields = await ej.turn_to_custom_emojis(guild=message.guild, **map_data['fields']['optional'])
+                emoted_fields = ej.turn_to_custom_emojis(guild=message.guild, **map_data['fields']['optional'])
                 map_data['fields']['optional'] = emoted_fields
                 map_embed = emb.create_map_embed(map_data)
                 return await message.channel.send(embed=map_embed)
