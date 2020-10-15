@@ -15,15 +15,14 @@ from sqlalchemy.orm import sessionmaker
 try:
     from settings import CONN_STRING
 except:
-    pass
+    try:
+        from src.settings import CONN_STRING
+    except:
+        print("WARNING: Could not import CONN_STRING from settings in mdd_scrape.py. Setting default value.")
+        import keyring
 
-try:
-    from src.settings import CONN_STRING
-except:
-    print("WARNING: Could not import CONN_STRING from settings in mdd_scrape.py. Setting default value.")
-    import keyring
-    DB_PASSWORD = keyring.get_password('db_password', 'postgres')
-    CONN_STRING = f"postgres://postgres:{DB_PASSWORD}@localhost:5432/Defrag"
+        DB_PASSWORD = keyring.get_password('db_password', 'postgres')
+        CONN_STRING = f"postgres://postgres:{DB_PASSWORD}@localhost:5432/Defrag"
 
 # pylint: disable=E1101
 
