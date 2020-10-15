@@ -16,11 +16,5 @@ RUN pip install -r requirements.txt
 # copy the content of the local src directory to the working directory
 COPY . .
 
-WORKDIR /src/mdd
-
-RUN python mdd_cronjob.py
-
-WORKDIR /src
-
 # command to run on container start
 CMD [ "python", "./dfbot.py" ]
