@@ -1,1 +1,1 @@
-*\15 * * * * python /src/mdd/mdd_scrape.py
+*\15 * * * * root python /src/mdd/mdd_scrape.py
