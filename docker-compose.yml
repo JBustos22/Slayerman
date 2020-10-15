@@ -8,6 +8,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=defrag
       - POSTGRES_DB=Defrag
+      - PYTHONPATH=.:/usr/local/lib/python
     volumes:
       - ./data:/data
     ports:
