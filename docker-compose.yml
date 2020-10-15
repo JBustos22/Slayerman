@@ -8,7 +8,6 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=defrag
       - POSTGRES_DB=Defrag
-      - PYTHONPATH=.:/usr/local/lib/python
     volumes:
       - ./data:/data
     ports:
@@ -27,6 +26,7 @@ services:
       - POSTGRES_ADDRESS=df_database
       - CLIENT_TOKEN=${CLIENT_TOKEN}
       - DFBOT_ENVIRONMENT=CONTAINER
+      - PYTHONPATH=.:/usr/local/lib/python
     volumes:
       - ./src:/src
 
