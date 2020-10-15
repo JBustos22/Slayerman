@@ -7,14 +7,6 @@ RUN apt-get update && apt-get -y install cron
 # set the working directory in the container
 WORKDIR /src
 
-# Copy mdd_cronjob file to the cron.d directory
-COPY mdd_cronjob /etc/cron.d/mdd_cronjob
-
-# Give execution rights on the cron job
-RUN chmod 0644 /etc/cron.d/mdd_cronjob
-
-RUN service cron start
-
 # copy the dependencies file to the working directory
 COPY requirements.txt .
 
@@ -23,6 +15,12 @@ RUN pip install -r requirements.txt
 
 # copy the content of the local src directory to the working directory
 COPY . .
+
+WORKDIR /src/mdd
+
+RUN python mdd_cronjob.py
+
+WORKDIR /src
 
 # command to run on container start
 CMD [ "python", "./dfbot.py" ]

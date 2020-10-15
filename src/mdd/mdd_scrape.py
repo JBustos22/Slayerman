@@ -296,5 +296,13 @@ def crawl_records():
         db_session.close()
 
 
-if __name__ == "__main__":
+def job():
     crawl_records()
+
+
+if __name__ == "__main__":
+    import schedule
+    schedule.every(15).minutes.do(job)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
