@@ -188,7 +188,7 @@ def crawl_records():
 
                     time.sleep(1)
 
-                country = player.find("img", {"class" : "flag"})["title"]
+                country = player.find("img", {"class" : "flag"})["title"].upper()
 
                 timestamp = datetime.datetime.fromtimestamp(date_to_timestamp(fields.pop().text))
 
@@ -274,6 +274,15 @@ def crawl_records():
                     "sq2.physics = m.physics AND "\
                     "sq2.player_id = m.player_id "
         db_session.execute(query)
+
+        # Remake player stats table
+        query = "DROP TABLE IF EXISTS mdd_player_stats; " \
+                "CREATE TABLE mdd_player_stats AS SELECT * FROM mdd_player_stats_view;"
+        db_session.execute(query)
+
+        # # Remake country stats table. Uncomment when ready for use.
+        # query = "DROP TABLE IF EXISTS mdd_country_stats; " \
+        # "CREATE TABLE mdd_country_stats AS SELECT * FROM mdd_country_stats_view;"
 
         db_session.commit()
     except:

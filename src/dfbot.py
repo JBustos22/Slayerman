@@ -122,6 +122,7 @@ async def on_message(message):
                 return await message.channel.send(embed=map_embed)
             except Exception as e:
                 msg = f"Huh? `usage: {meta.get_usage('mapinfo')}`"
+
         elif cmd == "!update":
             try:
                 args = message.content.split(' ')[1:]
@@ -137,6 +138,7 @@ async def on_message(message):
             except Exception as e:
                 await message.add_reaction("❌")
                 msg = f"Huh? `usage: {meta.get_usage('update')}`"
+
         elif cmd == '!help':
             msg = meta.create_help_message()
             return await message.channel.send(msg)
