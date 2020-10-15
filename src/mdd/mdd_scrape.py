@@ -14,10 +14,11 @@ from sqlalchemy.orm import sessionmaker
 
 try:
     from settings import CONN_STRING
+except:
+    pass
 
-except ModuleNotFoundError:
+try:
     from src.settings import CONN_STRING
-
 except:
     print("WARNING: Could not import CONN_STRING from settings in mdd_scrape.py. Setting default value.")
     import keyring
