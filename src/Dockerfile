@@ -4,6 +4,8 @@ FROM python:3.8.5
 # install cron
 RUN apt-get update && apt-get -y install cron
 
+RUN export PYTHONPATH=.:/usr/local/lib/python
+
 # set the working directory in the container
 WORKDIR /src
 
@@ -15,6 +17,12 @@ RUN chmod 0644 /etc/cron.d/mdd_cronjob
 
 # Apply cron job
 RUN crontab /etc/cron.d/mdd_cronjob
+
+# Create the log file to be able to run tail
+RUN touch /var/log/cron.log
+
+# Run the command on container startup
+CMD cron && tail -f /var/log/cron.log
 
 # copy the dependencies file to the working directory
 COPY requirements.txt .
