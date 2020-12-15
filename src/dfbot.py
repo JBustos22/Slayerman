@@ -24,6 +24,7 @@ async def on_message(message):
         return
 
     if message.content.startswith('!'):
+        msg = None
         cmd = message.content.split(' ')[0]
         if not cmd[1:].isalnum():
             return
@@ -123,6 +124,29 @@ async def on_message(message):
             except Exception as e:
                 msg = f"Huh? `usage: {meta.get_usage('mapinfo')}`"
 
+        elif cmd == '!newmap':
+            try:
+                if message.channel.type.name == 'news':
+                    import re
+                    from discord import Webhook
+                    link = message.content.split(' ')[1]
+                    map_r = r"https://ws.q3df.org/map/(.*)/"
+                    map_name = re.match(map_r, link).group(1)
+                    map_data = maps.get_map_data(map_name)
+                    emoted_fields = ej.turn_to_custom_emojis(guild=message.guild, **map_data['fields']['optional'])
+                    map_data['fields']['optional'] = emoted_fields
+                    map_embed = emb.create_map_embed(map_data)
+                    for role in message.guild.roles:
+                        if role.name == 'Maps subscribers':
+                            mention = role.mention
+                            await message.delete()
+                            return await message.channel.send(f"{mention} New map: {map_name}", embed=map_embed)
+
+                    await message.delete()
+                    return await message.channel.send(f"New map: {map_name}:", embed=map_embed)
+            except:
+                pass
+
         elif cmd == "!update":
             try:
                 args = message.content.split(' ')[1:]
@@ -144,7 +168,9 @@ async def on_message(message):
             return await message.channel.send(msg)
         else:
             return
-        await message.channel.send(msg)
+
+        if msg is not None:
+            await message.channel.send(msg)
 
 
 client.run(CLIENT_TOKEN if len(sys.argv) == 1 else sys.argv[1])
