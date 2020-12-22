@@ -76,7 +76,7 @@ def create_map_embed(map_data: dict):
     map_name, map_url, map_levelshot_url = [map_data[datum] for datum in ['name', 'url', 'levelshot_url']]
     map_embed = Embed(title=map_name, url=map_url, color=Colour(0xffffff))
     map_embed.set_image(url=map_levelshot_url)
-    thumbnail_url = "https://ws.q3df.org/images/icons/32x32/defrag.png"
+    thumbnail_url = "https://cdn.discordapp.com/attachments/788239274361356309/790733086345658378/defrag.png"
     map_embed.set_thumbnail(url=thumbnail_url)
     map_embed.set_author(name="Worldspawn Archive")
     optional_fields = map_data['fields'].pop('optional', {})

@@ -136,6 +136,7 @@ async def on_message(message):
                     emoted_fields = ej.turn_to_custom_emojis(guild=message.guild, **map_data['fields']['optional'])
                     map_data['fields']['optional'] = emoted_fields
                     map_embed = emb.create_map_embed(map_data)
+                    map_embed.set_image(url=map_embed.Empty)
                     for role in message.guild.roles:
                         if role.name == 'Maps subscribers':
                             mention = role.mention
@@ -143,7 +144,7 @@ async def on_message(message):
                             return await message.channel.send(f"{mention} New map: {map_name}", embed=map_embed)
 
                     await message.delete()
-                    return await message.channel.send(f"New map: {map_name}:", embed=map_embed)
+                    return await message.channel.send(f"New map: {map_name}", embed=map_embed)
             except:
                 pass
 
