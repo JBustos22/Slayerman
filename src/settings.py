@@ -10,7 +10,7 @@ if 'DFBOT_ENVIRONMENT' in os.environ and os.environ['DFBOT_ENVIRONMENT'] == 'CON
     DB_ADDRESS = os.environ['POSTGRES_ADDRESS']
 else:
     CLIENT_TOKEN = keyring.get_password('bot_token', 'dfbot')
-    DB_PASSWORD = "!Ex6ip4bb"
+    DB_PASSWORD = "keyring.get_password('db_password', 'postgres')"
     DB_USER = 'postgres'
     DB_NAME = 'Defrag'
     DB_ADDRESS = 'localhost'
