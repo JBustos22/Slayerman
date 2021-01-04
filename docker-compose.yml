@@ -9,7 +9,7 @@ services:
       - POSTGRES_PASSWORD=defrag
       - POSTGRES_DB=Defrag
     volumes:
-      - ./data:/data
+      - db:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
@@ -28,16 +28,21 @@ services:
       - DFBOT_ENVIRONMENT=CONTAINER
       - PYTHONPATH=.:/usr/local/lib/python
     volumes:
-      - ./src:/src
+      - src:/src
 
-  pgadmin:
-    image: "dpage/pgadmin4"
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@defrag.com
-      - PGADMIN_DEFAULT_PASSWORD=defrag
-    container_name: pgadmin4
-    volumes:
-      - ./data:/data
-    ports:
-      - "8080:80"
+#  pgadmin:
+#    image: "dpage/pgadmin4"
+#    environment:
+#      - PGADMIN_DEFAULT_EMAIL=admin@defrag.com
+#      - PGADMIN_DEFAULT_PASSWORD=defrag
+#    container_name: pgadmin4
+#    volumes:
+#      - pgadata:/data
+#    ports:
+#      - "8080:80"
+
+volumes:
+  db:
+  src:
+  pgadata:
 
