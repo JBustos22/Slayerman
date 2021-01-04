@@ -14,6 +14,10 @@ userstats:
   description: 'Display various online stats about a particular user. Defaults to overall if no physics provided.'
   usage: '!userstats <mdd_id>'
   arguments: 'vq3, cpm, vq3.1-7, cpm.1-7'
+myid:
+  description: 'Ties your mdd id to your discord id if an mdd id is passed, otherwise it shows your currently set mdd id'
+  usage: '!myid <mdd_id(opt)>'
+  arguments: 'None'
 mapinfo:
   description: 'Get detailed map data.'
   usage: '!mapinfo <map>'

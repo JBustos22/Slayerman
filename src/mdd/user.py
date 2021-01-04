@@ -3,8 +3,7 @@ Handles data processing for commands related to mdd and discord users
 """
 
 from tabulate import tabulate
-from settings import CONN_STRING
-from sqlalchemy import create_engine
+from settings import db
 
 
 def get_user_times(discord_id: str, df_map: str, physics: str = 'all'):
@@ -15,7 +14,6 @@ def get_user_times(discord_id: str, df_map: str, physics: str = 'all'):
     :param physics: if provided, the physics for which the user is requesting their times.
     :return: a tabulated result of times filtered by the user's inputs.
     """
-    db = create_engine(CONN_STRING)
 
     with db.connect() as conn:
         # Read
@@ -47,8 +45,6 @@ def get_overall_user_stats(discord_id: str = None, mdd_id: int = None):
     :param mdd_id: The desired user's mdd id, used when calling !userstats (not necessarily the calling user's id)
     :return: A dictionary of statistical data to be processed into an embed.
     """
-    db = create_engine(CONN_STRING)
-
     # Depending on whether the user is user !mystats or !userstats, the FROM and WHERE clauses will differ.
     if discord_id is not None:
         # if using !mystats, the calling user must have an entry in the discord_ids table, hence the join.
@@ -88,7 +84,7 @@ def get_overall_user_stats(discord_id: str = None, mdd_id: int = None):
                 stats_dict['total_top_10_times'] = f"{top10} ({round(top10 / total_times * 100, 2)}%)"
             result_set.close()
             return stats_dict
-        raise Exception("No statistics found.")
+        raise Exception("No statistics found. Use !myid to check or set your mdd id.")
 
 
 def get_physics_user_stats(physics_string: str, discord_id: str = None, mdd_id: int = None):
@@ -99,7 +95,6 @@ def get_physics_user_stats(physics_string: str, discord_id: str = None, mdd_id: 
     :param mdd_id: The requested user's mdd_id. Used when calling !userstats <physics>
     :return: A dictionary of statistical data to be processed into an embed.
     """
-    db = create_engine(CONN_STRING)
 
     # Supported physics dict. The keys are available physics arguments in discord, the values are the corresponding
     # physics string representations in the database.
@@ -173,7 +168,7 @@ def get_physics_user_stats(physics_string: str, discord_id: str = None, mdd_id: 
             result_set.close()
             return stats_dict
         result_set.close()
-        raise Exception("No statistics found.")
+        raise Exception("No statistics found. Use !myid to check or set your mdd id.")
 
 
 def process_total_seconds_to_readable(total_time: int):

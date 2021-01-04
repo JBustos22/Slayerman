@@ -8,7 +8,7 @@ import requests
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_dateutil
 
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import MetaData
 from sqlalchemy.sql import func, select, and_
 from sqlalchemy.orm import sessionmaker
 
@@ -120,7 +120,7 @@ def retry_web(method, args=[], retries=[10, 60, 600], valid_status_codes=[200]):
 
 
 def crawl_records():
-    db_engine = create_engine(CONN_STRING, echo=False)
+    from settings import db as db_engine
     Session = sessionmaker(bind=db_engine)
 
     meta_data = MetaData(bind=db_engine, reflect=True)

@@ -3,8 +3,7 @@
 import requests
 from bs4 import BeautifulSoup
 from random import randint
-from settings import CONN_STRING
-from sqlalchemy import create_engine
+from settings import db
 
 
 def get_random_map(modes=[]):
@@ -13,7 +12,6 @@ def get_random_map(modes=[]):
     :param modes: Descriptive filters to narrow down the search, i.e strafe for strafe-only, etc.
     :return: Map data dictionary corresponding to the resulting map
     """
-    db = create_engine(CONN_STRING)
 
     with db.connect() as conn:
         QUERY_PARAMS = []

@@ -6,6 +6,7 @@ from mdd import mdd_scrape
 from ws import maps
 from middleware.emojis import main as ej
 from middleware.embeds import main as emb
+from profile import main as pf
 import sys
 
 
@@ -28,7 +29,7 @@ async def on_message(message):
         cmd = message.content.split(' ')[0]
         if not cmd[1:].isalnum():
             return
-        discord_id = str(message.author)
+        discord_id = str(message.author.id)
 
         if cmd == '!top':
             try:
@@ -80,7 +81,7 @@ async def on_message(message):
                 stats_embed = emb.create_stats_embed(stats_data)
                 return await message.channel.send(embed=stats_embed)
             except Exception as e:
-                if str(e) in ("Invalid physics.", "No statistics found."):
+                if str(e) in ("Invalid physics.", "No statistics found. Use !myid to check or set your mdd id."):
                     msg = e
                 else:
                     msg = f"Huh? `usage: {meta.get_usage('mystats')}`"
@@ -164,6 +165,21 @@ async def on_message(message):
                 await message.add_reaction("❌")
                 msg = f"Huh? `usage: {meta.get_usage('update')}`"
 
+        elif cmd == "!myid":
+            try:
+                args = message.content.split(' ')[1:]
+                if len(args) > 0:
+                    mdd_id = args[0]
+                    msg = pf.set_id(discord_id, mdd_id)
+                    if msg is None:
+                        await message.add_reaction("✅")
+                    else:
+                        await message.add_reaction("❌")
+                else:
+                    msg = pf.get_id(message.author)
+            except Exception:
+                msg = f"Huh? usage: {meta.get_usage('myid')}"
+
         elif cmd == '!help':
             msg = meta.create_help_message()
             return await message.channel.send(msg)
@@ -173,5 +189,5 @@ async def on_message(message):
         if msg is not None:
             await message.channel.send(msg)
 
-
-client.run(CLIENT_TOKEN if len(sys.argv) == 1 else sys.argv[1])
+if __name__ == "__main__":
+    client.run(CLIENT_TOKEN if len(sys.argv) == 1 else sys.argv[1])

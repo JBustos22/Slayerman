@@ -3,8 +3,7 @@
 import requests
 from bs4 import BeautifulSoup
 # from tabulate import tabulate
-from settings import CONN_STRING
-from sqlalchemy import create_engine
+from settings import db
 
 
 def get_top(top_num: str, map_name: str, physics: str):
@@ -55,8 +54,6 @@ def get_top_from_db(top_num: str, map_name: str, physics: str = None):
     top_num = abs(int(top_num))
     recs_url = f'https://q3df.org/records/details?map={map_name}&mode=-1'  # q3df.org page of the recorsd for embed use
 
-    db = create_engine(CONN_STRING)
-
     with db.connect() as conn:
         recs = []
 
@@ -99,7 +96,6 @@ def get_wrs(map_name: str):
     :param map_name: Name of map for which world records are requested
     :return: A dictionary of world record data to be formatted into an embed.
     """
-    db = create_engine(CONN_STRING)
     map_name = map_name.lower()
 
     with db.connect() as conn:
