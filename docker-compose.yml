@@ -28,22 +28,11 @@ services:
       - CLIENT_TOKEN=${CLIENT_TOKEN}
       - DFBOT_ENVIRONMENT=CONTAINER
       - PYTHONPATH=.:/usr/local/lib/python
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
-      - AWS_SECRET_ACCESS_KEY={AWS_ACCESS_KEY}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY={AWS_SECRET_ACCESS_KEY}
       - AWS_DEFAULT_REGION=us-west-2
     volumes:
       - src:/src
-
-#  pgadmin:
-#    image: "dpage/pgadmin4"
-#    environment:
-#      - PGADMIN_DEFAULT_EMAIL=admin@defrag.com
-#      - PGADMIN_DEFAULT_PASSWORD=defrag
-#    container_name: pgadmin4
-#    volumes:
-#      - pgadata:/data
-#    ports:
-#      - "8080:80"
 
 volumes:
   db:
