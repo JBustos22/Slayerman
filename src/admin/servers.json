@@ -1,0 +1,110 @@
+{
+    "35.183.79.73": {
+        "location": "Montreal",
+        "flag": "ca",
+        "hostname": "World DF | Montreal",
+        "thumbnail": "https://www.tonicdna.com/wp-content/uploads/2019/07/Montreal_-_QC_-_Skyline-e1564089562906-500x500.jpg",
+        "status": "Stopped",
+        "message_id": 821188697236045875,
+        "activator": "",
+        "activator_dc": "",
+        "instance_id": "i-053706b41e066329c",
+        "region": "ca-central-1"
+    },
+    "54.206.0.6": {
+        "location": "Sydney",
+        "flag": "au",
+        "hostname": "World DF | Sydney",
+        "thumbnail": "https://www.holidaysplease.co.uk/assets/images/119-17-sydney%20opera%20house.jpg-BasicCrop-size-500x500.jpg",
+        "status": "Active",
+        "message_id": 821188699504508948,
+        "activator": 269782846741282826,
+        "activator_dc": "RDK#8423",
+        "instance_id": "i-080337842e925adf6",
+        "region": "ap-southeast-2"
+    },
+    "35.72.202.141": {
+        "location": "Tokyo",
+        "flag": "jp",
+        "hostname": "World DF | Tokyo",
+        "thumbnail": "https://miyamotointernational.com/wp-content/uploads/office-tokyo.jpg",
+        "status": "Stopped",
+        "message_id": 821188702755356732,
+        "activator": "",
+        "activator_dc": "",
+        "instance_id": "i-08032f215f290ac83",
+        "region": "ap-northeast-1"
+    },
+    "13.51.137.1": {
+        "location": "Stockholm",
+        "flag": "se",
+        "hostname": "World DF | Stockholm",
+        "thumbnail": "https://strawberrytours.com/wp-content/uploads/2019/07/Stockholm-500x500.jpg",
+        "status": "Stopped",
+        "message_id": 821188704789463058,
+        "activator": "",
+        "activator_dc": "",
+        "instance_id": "i-051dc3f8928d53732",
+        "region": "eu-north-1"
+    },
+    "204.236.176.142": {
+        "location": "California",
+        "flag": "us",
+        "hostname": "World DF | California",
+        "thumbnail": "https://www.scrapbook.com/products/cache/SBC_spc-36863_0.jpg",
+        "status": "Stopped",
+        "message_id": 821188707402252290,
+        "activator": "",
+        "activator_dc": "",
+        "instance_id": "i-09b25a044aefaadf5",
+        "region": "us-west-1"
+    },
+    "13.36.130.109": {
+        "location": "Paris",
+        "flag": "fr",
+        "hostname": "World DF | Paris",
+        "thumbnail": "https://tur.eutesters.com/wp-content/uploads/2019/09/paris.jpg",
+        "status": "Stopped",
+        "message_id": 821188718853488650,
+        "activator": "",
+        "activator_dc": "",
+        "instance_id": "i-09dfa16fa1b0290b8",
+        "region": "eu-west-3"
+    },
+    "175.41.167.174": {
+        "location": "Singapore",
+        "flag": "sg",
+        "hostname": "World DF | Singapore",
+        "thumbnail": "https://4.imimg.com/data4/II/II/GLADMIN-/images-portfolio-thumb-singapore-tour-package-500x500.jpg",
+        "status": "Stopped",
+        "message_id": 821188720832413706,
+        "activator": "",
+        "activator_dc": "",
+        "instance_id": "i-0a09951a8505d8ab3",
+        "region": "ap-southeast-1"
+    },
+    "13.245.107.109": {
+        "location": "Cape Town",
+        "flag": "za",
+        "hostname": "World DF | Cape Town",
+        "thumbnail": "https://image.arrivalguides.com/500x500/18/f3b9c07583a62553bae420f6d9f1514e.jpg",
+        "status": "Stopped",
+        "message_id": 821188722527174687,
+        "activator": "",
+        "activator_dc": "",
+        "instance_id": "i-0282bc49612f517f0",
+        "region": "af-south-1"
+    },
+    "54.94.102.4": {
+        "location": "Sao Paolo",
+        "flag": "br",
+        "hostname": "World DF | Sao Paolo",
+        "thumbnail": "https://strawberrytours.com/wp-content/uploads/2019/10/Sao_Paulo_500x500.jpg",
+        "status": "Stopped",
+        "message_id": 821188724971798568,
+        "activator": "",
+        "activator_dc": "",
+        "instance_id": "i-0f3c2f095f255c855",
+        "region": "sa-east-1"
+    }
+}
