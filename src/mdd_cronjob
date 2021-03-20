@@ -1,1 +1,1 @@
-*\15 * * * * root python /src/mdd/mdd_scrape.py > /var/log/mdd_update_log 2>&1
+*\15 * * * * root cd /src && /usr/local/bin/python /src/mdd/mdd_scrape.py > /var/log/mdd_update_log 2>&1
