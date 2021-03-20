@@ -2,9 +2,10 @@
 
 from discord import Embed, Colour
 from middleware.emojis.main import turn_country_ids_to_emojis
+from datetime import datetime
 
 
-def create_top_embed(top_data: dict):
+def create_top_embed(top_data: dict, update_time=None):
     """
     Creates embed for top records display
     :param top_data: dictionary of top records data containing necessary information for an embed
@@ -36,6 +37,8 @@ def create_top_embed(top_data: dict):
 
         # Add fields (embed subsections)
         top_embed.add_field(name=f"Records ({physics.upper()})", value=table, inline=False)
+
+    set_update_footer(top_embed, update_time)
     return top_embed
 
 
@@ -103,7 +106,7 @@ def create_map_embed(map_data: dict):
     return map_embed
 
 
-def create_stats_embed(stats_data: dict):
+def create_stats_embed(stats_data: dict, update_time=None):
     """
     Creates an embed for displaying an user's mdd statistics
     :param stats_data: Dictionary of mdd statistical data
@@ -127,4 +130,17 @@ def create_stats_embed(stats_data: dict):
     for key, value in stats_data.items():
         field_name = key.replace('_', ' ').capitalize()
         stats_embed.add_field(name=field_name, value=value, inline=False)
+    set_update_footer(stats_embed, update_time)
     return stats_embed
+
+
+def set_update_footer(embed, update_time):
+    if update_time is not None:
+        update_dt = datetime.now() - update_time
+        update_dt = update_dt.total_seconds()
+        if update_dt < 60:
+            update_dt = int(update_dt)
+            embed.set_footer(text=f"Updated {update_dt} second(s) ago")
+        else:
+            update_dt = int(update_dt//60)
+            embed.set_footer(text=f"Updated {update_dt} minute(s) ago")

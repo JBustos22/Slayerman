@@ -17,5 +17,4 @@ else:
 
 
 CONN_STRING = f"postgres://{DB_USER}:{DB_PASSWORD}@{DB_ADDRESS}:5432/{DB_NAME}"
-print(CONN_STRING)
 db = create_engine(CONN_STRING)
