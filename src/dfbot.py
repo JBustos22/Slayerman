@@ -11,9 +11,8 @@ import sys
 import time
 from admin import main as adm
 
-
 client = discord.Client()
-
+UPDATE_TIME = None
 
 @client.event
 async def on_ready():
@@ -23,6 +22,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    global UPDATE_TIME
     if message.author == client.user:
         return
 
@@ -52,7 +52,7 @@ async def on_message(message):
                 map_name = map_name.lower()
 
                 top_data = recs.get_top_from_db(top_num, map_name, physics)
-                top_embed = emb.create_top_embed(top_data)
+                top_embed = emb.create_top_embed(top_data, UPDATE_TIME)
                 return await message.channel.send(embed=top_embed)
             except Exception as e:
                 msg = f"Huh? `usage: {meta.get_usage('top')}`"
@@ -80,7 +80,7 @@ async def on_message(message):
                     stats_data = usr.get_physics_user_stats(discord_id=discord_id, physics_string=physics_string)
                 else:
                     stats_data = usr.get_overall_user_stats(discord_id=discord_id)
-                stats_embed = emb.create_stats_embed(stats_data)
+                stats_embed = emb.create_stats_embed(stats_data, UPDATE_TIME)
                 return await message.channel.send(embed=stats_embed)
             except Exception as e:
                 if str(e) in ("Invalid physics.", "No statistics found. Use !myid to check or set your mdd id."):
@@ -97,7 +97,7 @@ async def on_message(message):
                     stats_data = usr.get_physics_user_stats(physics_string, mdd_id=mdd_id)
                 else:
                     stats_data = usr.get_overall_user_stats(mdd_id=mdd_id)
-                stats_embed = emb.create_stats_embed(stats_data)
+                stats_embed = emb.create_stats_embed(stats_data, UPDATE_TIME)
                 return await message.channel.send(embed=stats_embed)
             except Exception as e:
                 if str(e) in ("Invalid physics.", "No statistics found."):
@@ -289,17 +289,20 @@ async def on_raw_reaction_add(payload):
                 adm.update_json('servers', SERVERS)
                 return
 
+
 def auto_update(minutes=2):
-    from mdd.mdd_scrape import crawl_records
+    from datetime import datetime
+    global UPDATE_TIME
+
     while True:
-        crawl_records()
+        mdd_scrape.crawl_records()
+        UPDATE_TIME = datetime.now()
         time.sleep(60 * minutes)
 
 
 if __name__ == "__main__":
     import json
     import threading
-    from mdd.mdd_scrape import crawl_records
 
     with open('admin/servers.json') as f:
         SERVERS = json.loads(f.read())
