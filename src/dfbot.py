@@ -151,21 +151,21 @@ async def on_message(message):
             except:
                 pass
 
-        elif cmd == "!update":
-            try:
-                args = message.content.split(' ')[1:]
-
-                for arg in args:
-                    if arg in ["mdd", "records", "mdd_records_ranked"]:
-                        await message.add_reaction("🔄")
-                        mdd_scrape.crawl_records()
-                        await message.remove_reaction("🔄", client.user)
-                        await message.add_reaction("✅")
-
-                return
-            except Exception as e:
-                await message.add_reaction("❌")
-                msg = f"Huh? `usage: {meta.get_usage('update')}`"
+        # elif cmd == "!update":
+        #     try:
+        #         args = message.content.split(' ')[1:]
+        #
+        #         for arg in args:
+        #             if arg in ["mdd", "records", "mdd_records_ranked"]:
+        #                 await message.add_reaction("🔄")
+        #                 mdd_scrape.crawl_records()
+        #                 await message.remove_reaction("🔄", client.user)
+        #                 await message.add_reaction("✅")
+        #
+        #         return
+        #     except Exception as e:
+        #         await message.add_reaction("❌")
+        #         msg = f"Huh? `usage: {meta.get_usage('update')}`"
 
         elif cmd == "!myid":
             try:
@@ -182,9 +182,10 @@ async def on_message(message):
             except Exception:
                 msg = f"Huh? usage: {meta.get_usage('myid')}"
 
-        elif cmd == "!listservers":
+        elif cmd == "!listservers" and message.author.guild_permissions.administrator:
             global SERVERS
-
+            await message.delete()
+            await message.channel.purge(limit=len(SERVERS))
             for ip, metadata in SERVERS.items():
                 embed = adm.create_server_embed(ip, metadata)
                 server_msg = await message.channel.send(embed=embed)
@@ -220,7 +221,7 @@ async def on_raw_reaction_add(payload):
             if SERVERS[ip]['status'] == 'Stopped' and payload.emoji.name == '▶️':
                 if str(payload.user_id) in ACTIVATORS:
                     await message.remove_reaction(payload.emoji, payload.member)
-                    activated_ip = SERVERS["activators"][str(payload.user_id)]
+                    activated_ip = ACTIVATORS[str(payload.user_id)]
                     dm_channel = await payload.member.create_dm()
                     return await dm_channel.send(
                         content=f"You cannot start {SERVERS[ip]['hostname']} because you"
@@ -240,12 +241,14 @@ async def on_raw_reaction_add(payload):
                 SERVERS[ip]['activator'] = payload.user_id
                 SERVERS[ip]['activator_dc'] = f"{payload.member.name}#{payload.member.discriminator}"
                 activator_name = payload.member.nick if payload.member.nick is not None else payload.member.name
-                embed.add_field(name="Activator", value=f"{activator_name} ({SERVERS[ip]['activator_dc']})", inline=False)
+                embed.add_field(name="Activator", value=f"{payload.member.mention}", inline=False)
                 adm.update_json("servers", SERVERS)
                 await message.edit(embed=embed)
                 await message.add_reaction("⏹️")
                 dm_channel = await payload.member.create_dm()
                 server_url = adm.get_df_launcher_url(ip, SERVERS[ip]['region'])
+                await alert_channel.send(
+                    content=f"{activator_name} ({SERVERS[ip]['activator_dc']}) has started :flag_{SERVERS[ip]['flag']}: `{SERVERS[ip]['hostname']} ({SERVERS[ip]['flag']}.q3df.run)`. Connect: {server_url}")
                 await dm_channel.send(content=f"You have started {SERVERS[ip]['hostname']}!"
                                               f" Connect to it using `/connect {ip}` in your defrag engine, "
                                               f"or if you have the Defrag Launcher, click {server_url}."
@@ -254,21 +257,22 @@ async def on_raw_reaction_add(payload):
                                               f"server's embed if you are done with it and the server is empty. "
                                               f"If there are any issues with the server, please contact frog/h@des "
                                               f"(frog#1459) through discord. Enjoy!")
-                await alert_channel.send(content=f"{activator_name} ({SERVERS[ip]['activator_dc']}) has started :flag_{SERVERS[ip]['flag']}: `{SERVERS[ip]['hostname']} ({SERVERS[ip]['flag']}.q3df.run)`. Connect: {server_url}")
                 return
             if SERVERS[ip]['status'] == 'Active' and payload.emoji.name == '⏹️':
-                if payload.user_id != SERVERS[ip]['activator'] and not payload.member.guild_permissions.manage_channels:
+                if payload.user_id != SERVERS[ip]['activator'] and not payload.member.permissions_in(channel).manage_channels:
                     await message.remove_reaction(payload.emoji, payload.member)
                     dm_channel = await payload.member.create_dm()
                     return await dm_channel.send(content=f"You do not have permission to stop {SERVERS[ip]['hostname']}, as you did not start the server. ")
                 await message.clear_reactions()
+                stopper_name = payload.member.nick if payload.member.nick is not None else payload.member.name
                 embed = message.embeds[0]
-                embed.set_field_at(1, name='Status', value=f':orange_circle: Stopping', inline=False)
-                activator_name = payload.member.nick if payload.member.nick is not None else payload.member.name
-                embed.set_field_at(2, name='Stopper', value=f"{activator_name} ({SERVERS[ip]['activator_dc']})", inline=False)
+                try:
+                    embed.set_field_at(1, name='Status', value=f':orange_circle: Stopping', inline=False)
+                    embed.set_field_at(2, name='Stopper', value=f"{payload.member.mention}", inline=False)
+                except:
+                    pass
                 await message.edit(embed=embed)
                 adm.stop_server(SERVERS[ip])
-                stopper_name = payload.member.nick if payload.member.nick is not None else payload.member.name
                 await alert_channel.send(
                     content=f"{stopper_name} ({payload.member.name}#{payload.member.discriminator}) has stopped :flag_{SERVERS[ip]['flag']}: `{SERVERS[ip]['hostname']}`")
                 SERVERS[ip]['status'] = "Stopped"
@@ -283,20 +287,22 @@ async def on_raw_reaction_add(payload):
                 SERVERS[ip]['activator'] = ""
                 SERVERS[ip]['activator_dc'] = ""
                 adm.update_json('servers', SERVERS)
-                if payload.user_id == SERVERS[ip]['activator']:
-                    dm_channel = await payload.member.create_dm()
-                    await dm_channel.send(content=f"You have stopped {SERVERS[ip]['hostname']} at `{ip}`. Thanks for playing!")
                 return
 
 if __name__ == "__main__":
     import json
+    import threading
     from mdd.mdd_scrape import crawl_records
+
     with open('admin/servers.json') as f:
         SERVERS = json.loads(f.read())
     with open("admin/activators.json") as f:
         ACTIVATORS = json.loads(f.read())
 
-    client.run(CLIENT_TOKEN if len(sys.argv) == 1 else sys.argv[1])
+    bot_thread = threading.Thread(target=client.run, args=(CLIENT_TOKEN if len(sys.argv) == 1 else sys.argv[1],),
+                                  daemon=True)
+    bot_thread.start()
+    activity_thread = threading.Thread()
     while True:
         crawl_records()
-        time.sleep(60 * 10) # run every 15 minutes
+        time.sleep(60 * 2)  # run every 2 minutes

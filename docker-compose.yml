@@ -9,7 +9,7 @@ services:
       - POSTGRES_PASSWORD=defrag
       - POSTGRES_DB=Defrag
     volumes:
-      - db:/var/lib/postgresql/data
+      - ./data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
@@ -27,9 +27,9 @@ services:
       - CLIENT_TOKEN=${CLIENT_TOKEN}
       - DFBOT_ENVIRONMENT=CONTAINER
       - PYTHONPATH=.:/usr/local/lib/python
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
-      - AWS_SECRET_ACCESS_KEY={AWS_ACCESS_KEY}
-      - AWS_DEFAULT_REGION=us-west-2
+      - AWS_ACCESS_KEY_ID=AKIA4OOITDEZZEIUL4XV
+      - AWS_SECRET_ACCESS_KEY=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
+      - AWS_DEFAULT_REGION="us-west-2"
     volumes:
       - src:/src
 
