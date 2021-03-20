@@ -302,7 +302,6 @@ if __name__ == "__main__":
     bot_thread = threading.Thread(target=client.run, args=(CLIENT_TOKEN if len(sys.argv) == 1 else sys.argv[1],),
                                   daemon=True)
     bot_thread.start()
-    activity_thread = threading.Thread()
     while True:
         crawl_records()
         time.sleep(60 * 2)  # run every 2 minutes
