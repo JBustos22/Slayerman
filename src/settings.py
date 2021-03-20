@@ -15,6 +15,7 @@ else:
     DB_NAME = 'Defrag'
     DB_ADDRESS = 'localhost'
 
-CONN_STRING = f"postgres://{DB_USER}:{DB_PASSWORD}@{DB_ADDRESS}:5432/{DB_NAME}"
 
+CONN_STRING = f"postgres://{DB_USER}:{DB_PASSWORD}@{DB_ADDRESS}:5432/{DB_NAME}"
+print(CONN_STRING)
 db = create_engine(CONN_STRING)
