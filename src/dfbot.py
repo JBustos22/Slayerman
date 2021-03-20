@@ -289,6 +289,13 @@ async def on_raw_reaction_add(payload):
                 adm.update_json('servers', SERVERS)
                 return
 
+def auto_update(minutes=2):
+    from mdd.mdd_scrape import crawl_records
+    while True:
+        crawl_records()
+        time.sleep(60 * minutes)
+
+
 if __name__ == "__main__":
     import json
     import threading
@@ -299,9 +306,5 @@ if __name__ == "__main__":
     with open("admin/activators.json") as f:
         ACTIVATORS = json.loads(f.read())
 
-    bot_thread = threading.Thread(target=client.run, args=(CLIENT_TOKEN if len(sys.argv) == 1 else sys.argv[1],),
-                                  daemon=True)
-    bot_thread.start()
-    while True:
-        crawl_records()
-        time.sleep(60 * 2)  # run every 2 minutes
+    threading.Thread(target=auto_update, daemon=True).start()
+    client.run(CLIENT_TOKEN if len(sys.argv) == 1 else sys.argv[1])
