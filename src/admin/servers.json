@@ -64,10 +64,10 @@
         "flag": "sg",
         "hostname": "World DF | Singapore",
         "thumbnail": "https://4.imimg.com/data4/II/II/GLADMIN-/images-portfolio-thumb-singapore-tour-package-500x500.jpg",
-        "status": "Stopped",
+        "status": "Active",
         "message_id": 821837171220283422,
-        "activator": "",
-        "activator_dc": "",
+        "activator": 320443121257283587,
+        "activator_dc": "Leave it to the Mattster!#6299",
         "instance_id": "i-0a09951a8505d8ab3",
         "region": "ap-southeast-1"
     },
