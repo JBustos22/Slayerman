@@ -28,7 +28,7 @@ def create_server_embed(ip=None, metadata=None):
 
 
 def update_json(json_f, dict):
-    with open(f'admin/{json_f}.json', 'w') as outfile:
+    with open(f'servers/{json_f}.json', 'w') as outfile:
         json.dump(dict, outfile, indent=4)
 
 
@@ -57,3 +57,34 @@ def get_df_launcher_url(address, server_region):
         return json.loads(r.text)['url']['shortLink']
     except KeyError:
         return f"https://cutt.ly/df-{server_region.lower()}"
+
+
+def scrape_servers_data():
+    import requests
+    from bs4 import BeautifulSoup
+    from dateutil import parser
+    """ Obtains data from q3df.org/servers using web scraping"""
+    url = f'https://q3df.org/serverlist'
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    server_ids = [ele.get('id').split('_')[-1] for ele in soup.findAll('div', {'class': 'server-item shadow'})]
+    server_names = [ele.text for ele in soup.findAll('div', {'class': 'server-head'})]
+    server_states = [ele.find('ul').text.strip('\n').split('\n') for ele in soup.findAll('div', {'class': 'server-map-info'})]
+    server_players_qty = [len(ele.find_all('span', {'class':'visname'})) for ele in soup.findAll('div', {'class': 'server-players'})]
+    update_time_raw = soup.findAll('div', {'id': 'server-list'})[0].find('span').text.strip('(last update: ').strip(')')
+    servers_data = {'update_time': parser.parse(update_time_raw)}
+    for i in range(len(server_ids)):
+        state = server_states[i]
+        server_state = {
+            "ip": state[0],
+            "map_name": state[1],
+            "physics": state[2]
+        }
+        server_details = {
+            "name": server_names[i],
+            "state": server_state,
+            "players_qty": server_players_qty[i]
+        }
+        servers_data[server_ids[i]] = server_details
+
+    return servers_data
