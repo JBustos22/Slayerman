@@ -10,6 +10,7 @@ from profile import main as pf
 import sys
 import time
 from servers import main as sv
+from datetime import datetime
 
 client = discord.Client()
 UPDATE_TIME = None
@@ -18,6 +19,43 @@ UPDATE_TIME = None
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     await client.change_presence(activity=discord.Game("!help"))
+    last_check = datetime.min
+    q3df_sv_id = 751568522982719588 #649454774785146894
+    demand_ch_id = 820036524900614174 #820057557473165382
+    alert_ch_id = 3751568522982719588 #822853096165736458
+    max_inactivity = 2
+    while True:
+        try:
+            active_servers = sv.scrape_servers_data()
+            if active_servers['update_time'] > last_check:
+                last_check = active_servers['update_time']
+                for ip in SERVERS:
+                    if SERVERS[ip]['server_id'] in active_servers:  # one of our servers is active
+                        server_id = SERVERS[ip]['server_id']
+                        if active_servers[server_id]['players_qty'] == 0:
+                            SERVERS[ip]['inactivity_count'] += 1
+                            sv.update_json('servers', SERVERS)
+                            print(
+                                f"Server {SERVERS[ip]['hostname']} inactivity detected. {SERVERS[ip]['inactivity_count']}/{max_inactivity}")
+                            if SERVERS[ip]['inactivity_count'] >= max_inactivity:
+                                print(f"Stopping server {SERVERS[ip]['hostname']} due to inactivity")
+                                q3df_guild = client.get_guild(q3df_sv_id)
+                                demand_channel = q3df_guild.get_channel(demand_ch_id)
+                                message = await demand_channel.fetch_message(SERVERS[ip]['message_id'])
+                                await stop_server(message, ip, inactivity=True)
+                                SERVERS[ip]['inactivity_count'] = 0
+                                sv.update_json('servers', SERVERS)
+                                alert_channel = q3df_guild.get_channel(alert_ch_id)
+                                await alert_channel.send(
+                                    content=f":flag_{SERVERS[ip]['flag']}: `{SERVERS[ip]['hostname']}` was stopped due to inactivity.")
+                        else:
+                            SERVERS[ip]['inactivity_count'] = 0  # reset inactivity counter
+                            sv.update_json('servers', SERVERS)
+                            print(
+                                f"Server {SERVERS[ip]['hostname']} activity detected. Inactivity count reset to {SERVERS[ip]['inactivity_count']}")
+            await asyncio.sleep(60)
+        except Exception as e:
+            print("Failed auto-stopper due to: ", e)
 
 
 @client.event
@@ -211,8 +249,8 @@ async def on_message(message):
 async def on_raw_reaction_add(payload):
     global SERVERS
     global ACTIVATORS
-    demand_ch_id = 820057557473165382  # 820036524900614174
-    alert_ch_id = 822853096165736458  # 3751568522982719588
+    demand_ch_id = 820036524900614174
+    alert_ch_id = 3751568522982719588
     if payload.user_id == client.user.id:
         return
     for ip, metadata in SERVERS.items():
@@ -269,7 +307,7 @@ async def launch_server(payload, message, ip):
     embed = message.embeds[0]
     embed.set_field_at(1, name='Status', value=f':orange_circle: Starting', inline=False)
     await message.edit(embed=embed)
-    # sv.start_server(SERVERS[ip])
+    sv.start_server(SERVERS[ip])
     embed = message.embeds[0]
     embed.set_field_at(1, name='Status', value=f':green_circle: Active', inline=False)
     SERVERS[ip]['status'] = "Active"
@@ -281,27 +319,34 @@ async def launch_server(payload, message, ip):
     await message.add_reaction("⏹️")
 
 
-async def stop_server(message, ip, payload=None):
+async def stop_server(message, ip, payload=None, inactivity=False):
     global SERVERS
     global ACTIVATORS
     await message.clear_reactions()
     embed = message.embeds[0]
     try:
         embed.set_field_at(1, name='Status', value=f':orange_circle: Stopping', inline=False)
-        embed.set_field_at(2, name='Stopper', value=f"{payload.member.mention}", inline=False)
+        if inactivity:
+            embed.set_field_at(2, name='Reason', value=f"Inactivity", inline=False)
+        else:
+            embed.set_field_at(2, name='Stopper', value=f"{payload.member.mention}", inline=False)
     except:
         pass
     await message.edit(embed=embed)
-    # sv.stop_server(SERVERS[ip])
+    time.sleep(10)
+    sv.stop_server(SERVERS[ip])
     SERVERS[ip]['status'] = "Stopped"
     embed = message.embeds[0]
     embed.remove_field(2)
     embed.set_field_at(1, name='Status', value=':red_circle: Stopped', inline=False)
     await message.edit(embed=embed)
     await message.add_reaction("▶️")
-    ACTIVATORS.pop(str(SERVERS[ip]['activator']))
+    try:
+        ACTIVATORS.pop(str(SERVERS[ip]['activator']))
+        print(f"Removed {SERVERS[ip]['activator']} from activators. activators = {ACTIVATORS}")
+    except KeyError:
+        pass
     sv.update_json("activators", ACTIVATORS)
-    print(f"Removed {SERVERS[ip]['activator']} from activators. activators = {ACTIVATORS}")
     SERVERS[ip]['activator'] = ""
     SERVERS[ip]['activator_dc'] = ""
     sv.update_json('servers', SERVERS)
@@ -320,40 +365,6 @@ def auto_update(minutes=2):
             pass
 
 
-async def activity_checker(max_inactivity=1):
-    from datetime import datetime
-    last_check = datetime.min
-    q3df_sv_id = 649454774785146894  # 751568522982719588
-    demand_ch_id = 820057557473165382  # 820036524900614174
-    alert_ch_id = 822853096165736458  # 3751568522982719588
-    while True:
-        try:
-            active_servers = sv.scrape_servers_data()
-            if active_servers['update_time'] > last_check:
-                last_check = active_servers['update_time']
-                for ip in SERVERS:
-                    if SERVERS[ip]['server_id'] in active_servers:  # one of our servers is active
-                        server_id = SERVERS[ip]['server_id']
-                        if active_servers[server_id]['players_qty'] == 0 or True:
-                            SERVERS[ip]['inactivity_count'] += 1
-                            print(f"Server {SERVERS[ip]['hostname']} inactivity detected. {SERVERS[ip]['inactivity_count']}/{max_inactivity}")
-                            if SERVERS[ip]['inactivity_count'] >= max_inactivity:
-                                print(f"Stopping server {SERVERS[ip]['hostname']} due to inactivity")
-                                q3df_guild = client.get_guild(q3df_sv_id)
-                                demand_channel = q3df_guild.get_channel(demand_ch_id)
-                                message = await demand_channel.fetch_message(SERVERS[ip]['message_id'])
-                                await stop_server(message, ip)
-                                alert_channel = q3df_guild.get_channel(alert_ch_id)
-                                await alert_channel.send(
-                                    content=f":flag_{SERVERS[ip]['flag']}: `{SERVERS[ip]['hostname']}` shut down due to inactivity.")
-                        else:
-                            SERVERS[ip]['inactivity_count'] = 0  # reset inactivity counter
-                            print(f"Server {SERVERS[ip]['hostname']} activity detected. Inactivity count reset to {SERVERS[ip]['inactivity_count']}")
-            time.sleep(60)
-        except Exception as e:
-            print(e)
-
-
 if __name__ == "__main__":
     import json
     import threading
@@ -365,5 +376,4 @@ if __name__ == "__main__":
         ACTIVATORS = json.loads(f.read())
 
     threading.Thread(target=auto_update, daemon=True).start()
-    threading.Thread(target=asyncio.run, args=(activity_checker(),), daemon=True).start()
     client.run(CLIENT_TOKEN if len(sys.argv) == 1 else sys.argv[1])

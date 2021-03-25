@@ -47,10 +47,10 @@
         "flag": "us",
         "hostname": "World DF | Oregon",
         "thumbnail": "https://higherlogicdownload.s3.amazonaws.com/PBIUSERGROUP/0dd17701-ca4a-49ad-9e12-8a3458d663ba/UploadedImages/World_Tour/2019/PPWT-Portland-500pxX500px.jpg",
-        "status": "Active",
+        "status": "Stopped",
         "message_id": 823427767935827969,
-        "activator": 356118537569566731,
-        "activator_dc": "frog#1459",
+        "activator": "",
+        "activator_dc": "",
         "instance_id": "i-04f204adb1732e44c",
         "region": "us-west-2",
         "inactivity_count": 0
