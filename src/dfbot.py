@@ -20,9 +20,9 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     await client.change_presence(activity=discord.Game("!help"))
     last_check = datetime.min
-    q3df_sv_id = 751568522982719588 #649454774785146894
+    q3df_sv_id = 751483934034100274 #649454774785146894
     demand_ch_id = 820036524900614174 #820057557473165382
-    alert_ch_id = 3751568522982719588 #822853096165736458
+    alert_ch_id = 751568522982719588 #822853096165736458
     max_inactivity = 2
     while True:
         try:
@@ -250,7 +250,7 @@ async def on_raw_reaction_add(payload):
     global SERVERS
     global ACTIVATORS
     demand_ch_id = 820036524900614174
-    alert_ch_id = 3751568522982719588
+    alert_ch_id = 751568522982719588
     if payload.user_id == client.user.id:
         return
     for ip, metadata in SERVERS.items():
