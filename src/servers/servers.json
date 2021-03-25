@@ -19,13 +19,13 @@
         "flag": "jp",
         "hostname": "World DF | Tokyo",
         "thumbnail": "https://miyamotointernational.com/wp-content/uploads/office-tokyo.jpg",
-        "status": "Stopped",
+        "status": "Active",
         "message_id": 823018553534971946,
-        "activator": "",
-        "activator_dc": "",
+        "activator": 356118537569566731,
+        "activator_dc": "frog#1459",
         "instance_id": "i-08032f215f290ac83",
         "region": "ap-northeast-1",
-        "inactivity_count": 0
+        "inactivity_count": 6
     },
     "13.51.137.1": {
         "server_id": "436",
@@ -47,10 +47,10 @@
         "flag": "us",
         "hostname": "World DF | Oregon",
         "thumbnail": "https://higherlogicdownload.s3.amazonaws.com/PBIUSERGROUP/0dd17701-ca4a-49ad-9e12-8a3458d663ba/UploadedImages/World_Tour/2019/PPWT-Portland-500pxX500px.jpg",
-        "status": "Stopped",
+        "status": "Active",
         "message_id": 823018558480973824,
-        "activator": "",
-        "activator_dc": "",
+        "activator": 259905892852432906,
+        "activator_dc": "tofu#8513",
         "instance_id": "i-04f204adb1732e44c",
         "region": "us-west-2",
         "inactivity_count": 0
