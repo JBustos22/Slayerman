@@ -112,7 +112,7 @@ def get_map_data(map_name: str):
     :return: Map data dictionary containing the map's information, to be later formatted into an embed
     """
     url = f"http://ws.q3df.org/map/{map_name}/"
-    r = requests.get(url)
+    r = requests.get(url, verify=False)
     soup = BeautifulSoup(r.text, 'html.parser')
     map_data = dict()
     map_data['name'] = map_name

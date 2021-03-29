@@ -18,7 +18,7 @@ def get_top(top_num: str, map_name: str, physics: str):
     top_num = str(abs(int(top_num))) if top_num.isnumeric() else '10'
     physics_num = physics_dict[physics]
     url = f'https://q3df.org/records/details?map={map_name}&mode=-1&physic={physics_num}'
-    r = requests.get(url)
+    r = requests.get(url, verify=False)
     soup = BeautifulSoup(r.text, 'html.parser')
     top = soup.find('table', attrs={'class': 'recordlist'}).tbody.find_all('tr')
     max_recs = len(top)

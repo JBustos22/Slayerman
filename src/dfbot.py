@@ -56,6 +56,7 @@ async def on_ready():
             await asyncio.sleep(60)
         except Exception as e:
             print("Failed auto-stopper due to: ", e)
+            time.sleep(10)
 
 
 @client.event
@@ -336,6 +337,7 @@ async def stop_server(message, ip, payload=None, inactivity=False):
     time.sleep(10)
     sv.stop_server(SERVERS[ip])
     SERVERS[ip]['status'] = "Stopped"
+    SERVERS[ip]['inactivity_counter'] = 0
     embed = message.embeds[0]
     embed.remove_field(2)
     embed.set_field_at(1, name='Status', value=':red_circle: Stopped', inline=False)
@@ -363,6 +365,7 @@ def auto_update(minutes=2):
             time.sleep(60 * minutes)
         except:
             pass
+            time.sleep(20)
 
 
 if __name__ == "__main__":
