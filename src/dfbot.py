@@ -23,7 +23,7 @@ async def on_ready():
     q3df_sv_id = 751483934034100274 #649454774785146894
     demand_ch_id = 820036524900614174 #820057557473165382
     alert_ch_id = 751568522982719588 #822853096165736458
-    max_inactivity = 2
+    max_inactivity = 3
     while True:
         try:
             active_servers = sv.scrape_servers_data()
@@ -38,12 +38,12 @@ async def on_ready():
                             print(
                                 f"Server {SERVERS[ip]['hostname']} inactivity detected. {SERVERS[ip]['inactivity_count']}/{max_inactivity}")
                             if SERVERS[ip]['inactivity_count'] >= max_inactivity:
+                                SERVERS[ip]['inactivity_count'] = 0
                                 print(f"Stopping server {SERVERS[ip]['hostname']} due to inactivity")
                                 q3df_guild = client.get_guild(q3df_sv_id)
                                 demand_channel = q3df_guild.get_channel(demand_ch_id)
                                 message = await demand_channel.fetch_message(SERVERS[ip]['message_id'])
                                 await stop_server(message, ip, inactivity=True)
-                                SERVERS[ip]['inactivity_count'] = 0
                                 sv.update_json('servers', SERVERS)
                                 alert_channel = q3df_guild.get_channel(alert_ch_id)
                                 await alert_channel.send(
