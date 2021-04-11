@@ -13,6 +13,20 @@
         "region": "ap-southeast-2",
         "inactivity_count": 0
     },
+      "3.10.114.224": {
+        "server_id": "435",
+        "location": "London",
+        "flag": "gb",
+        "hostname": "World DF | London",
+        "thumbnail": "http://zimngoma.com/wp-content/uploads/2015/03/london-500x500.jpg",
+        "status": "Stopped",
+        "message_id": "",
+        "activator": "",
+        "activator_dc": "",
+        "instance_id": "i-0900a61374cdc77a3",
+        "region": "eu-west-2a",
+        "inactivity_count": 0
+    },
     "35.72.202.141": {
         "server_id": "433",
         "location": "Tokyo",
