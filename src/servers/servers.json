@@ -11,8 +11,7 @@
         "activator_dc": "",
         "instance_id": "i-080337842e925adf6",
         "region": "ap-southeast-2",
-        "inactivity_count": 0,
-        "inactivity_counter": 0
+        "inactivity_count": 0
     },
       "3.10.114.224": {
         "server_id": "435",
@@ -40,8 +39,7 @@
         "activator_dc": "",
         "instance_id": "i-08032f215f290ac83",
         "region": "ap-northeast-1",
-        "inactivity_count": 0,
-        "inactivity_counter": 0
+        "inactivity_count": 0
     },
     "13.51.137.1": {
         "server_id": "436",
@@ -55,8 +53,7 @@
         "activator_dc": "Odebonfang#6334",
         "instance_id": "i-051dc3f8928d53732",
         "region": "eu-north-1",
-        "inactivity_count": 0,
-        "inactivity_counter": 0
+        "inactivity_count": 0
     },
     "52.39.193.224": {
         "server_id": "437",
@@ -70,8 +67,7 @@
         "activator_dc": "",
         "instance_id": "i-04f204adb1732e44c",
         "region": "us-west-2",
-        "inactivity_count": 0,
-        "inactivity_counter": 0
+        "inactivity_count": 0
     },
     "13.36.130.109": {
         "server_id": "439",
@@ -85,8 +81,7 @@
         "activator_dc": "",
         "instance_id": "i-09dfa16fa1b0290b8",
         "region": "eu-west-3",
-        "inactivity_count": 0,
-        "inactivity_counter": 0
+        "inactivity_count": 0
     },
     "175.41.167.174": {
         "server_id": "429",
@@ -100,8 +95,7 @@
         "activator_dc": "",
         "instance_id": "i-0a09951a8505d8ab3",
         "region": "ap-southeast-1",
-        "inactivity_count": 0,
-        "inactivity_counter": 0
+        "inactivity_count": 0
     },
     "13.245.107.109": {
         "server_id": "431",
@@ -115,8 +109,7 @@
         "activator_dc": "",
         "instance_id": "i-0282bc49612f517f0",
         "region": "af-south-1",
-        "inactivity_count": 0,
-        "inactivity_counter": 0
+        "inactivity_count": 0
     },
     "54.94.102.4": {
         "server_id": "427",
@@ -130,7 +123,6 @@
         "activator_dc": "",
         "instance_id": "i-0f3c2f095f255c855",
         "region": "sa-east-1",
-        "inactivity_count": 0,
-        "inactivity_counter": 0
+        "inactivity_count": 0
     }
 }
