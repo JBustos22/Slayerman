@@ -14,15 +14,23 @@ from datetime import datetime
 
 client = discord.Client()
 UPDATE_TIME = None
+UPDATE_TIME_MAPS = datetime.now().timestamp()
 
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     await client.change_presence(activity=discord.Game("!help"))
     last_check = datetime.min
+
     q3df_sv_id = 751483934034100274 #649454774785146894
+    q3df_guild = client.get_guild(q3df_sv_id)
+
     demand_ch_id = 820036524900614174 #820057557473165382
+    demand_channel = q3df_guild.get_channel(demand_ch_id)
+
     alert_ch_id = 751568522982719588 #822853096165736458
+    alert_channel = q3df_guild.get_channel(alert_ch_id)
+
     max_inactivity = 3
     while True:
         try:
@@ -40,12 +48,9 @@ async def on_ready():
                             if SERVERS[ip]['inactivity_count'] >= max_inactivity:
                                 SERVERS[ip]['inactivity_count'] = 0
                                 print(f"Stopping server {SERVERS[ip]['hostname']} due to inactivity")
-                                q3df_guild = client.get_guild(q3df_sv_id)
-                                demand_channel = q3df_guild.get_channel(demand_ch_id)
                                 message = await demand_channel.fetch_message(SERVERS[ip]['message_id'])
                                 await stop_server(message, ip, inactivity=True)
                                 sv.update_json('servers', SERVERS)
-                                alert_channel = q3df_guild.get_channel(alert_ch_id)
                                 await alert_channel.send(
                                     content=f":flag_{SERVERS[ip]['flag']}: `{SERVERS[ip]['hostname']}` was stopped due to inactivity.")
                         else:
@@ -53,10 +58,35 @@ async def on_ready():
                             sv.update_json('servers', SERVERS)
                             print(
                                 f"Server {SERVERS[ip]['hostname']} activity detected. Inactivity count reset to {SERVERS[ip]['inactivity_count']}")
-            await asyncio.sleep(60)
+
         except Exception as e:
             print("Failed auto-stopper due to: ", e)
             time.sleep(10)
+
+        # New maps
+        if datetime.now().timestamp() - UPDATE_TIME_MAPS > 600:
+            maps_new = get_newmaps()
+
+            for map_url in maps_new:
+                try:
+                    import re
+                    from discord import Webhook
+                    map_r = r"https://ws.q3df.org/map/(.*)/"
+                    map_name = re.match(map_r, map_url).group(1)
+                    map_data = maps.get_map_data(map_name)
+                    emoted_fields = ej.turn_to_custom_emojis(guild=q3df_guild, **map_data['fields']['optional'])
+                    map_data['fields']['optional'] = emoted_fields
+                    map_embed = emb.create_map_embed(map_data)
+                    map_embed.set_image(url=map_embed.Empty)
+
+                    for role in q3df_guild.roles:
+                        if role.name == 'Maps subscribers':
+                            mention = role.mention
+                            await alert_channel.send(f"{mention} New map: {map_name}", embed=map_embed)
+                except Exception as e:
+                    print("Failed to fetch new maps due to: ", e)
+
+        await asyncio.sleep(60)
 
 
 @client.event
@@ -167,6 +197,8 @@ async def on_message(message):
                 msg = f"Huh? `usage: {meta.get_usage('mapinfo')}`"
 
         elif cmd == '!newmap':
+            pass
+            '''
             try:
                 if message.channel.type.name == 'news':
                     import re
@@ -189,6 +221,7 @@ async def on_message(message):
                     return await message.channel.send(f"New map: {map_name}", embed=map_embed)
             except:
                 pass
+            '''
 
         # elif cmd == "!update":
         #     try:
@@ -366,6 +399,35 @@ def auto_update(minutes=2):
         except:
             pass
             time.sleep(20)
+
+def get_newmaps():
+    import feedparser
+
+    from datetime import datetime
+    from dateutil.parser import parse as parse_dateutil
+
+    global UPDATE_TIME_MAPS
+
+    if UPDATE_TIME_MAPS == None:
+        UPDATE_TIME_MAPS = datetime.now().timestamp()
+
+    maps_new = []
+
+    try:
+        maps_feed = feedparser.parse("https://ws.q3df.org/rss/released_maps/")
+
+        for map in maps_feed.entries:
+            map_url = map.link
+            map_release_ts = parse_dateutil(map.published).timestamp()
+
+            if map_release_ts > UPDATE_TIME_MAPS:
+                maps_new.append(map_url)
+
+        UPDATE_TIME_MAPS = datetime.now().timestamp()
+    except Exception as e:
+        print("Failed to fetch WS RSS due to: ", e)
+
+    return maps_new
 
 
 if __name__ == "__main__":
