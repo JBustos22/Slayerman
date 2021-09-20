@@ -31,38 +31,7 @@ async def on_ready():
     alert_ch_id = 751568522982719588 #822853096165736458
     alert_channel = q3df_guild.get_channel(alert_ch_id)
 
-    max_inactivity = 3
     while True:
-        try:
-            active_servers = sv.scrape_servers_data()
-            if active_servers['update_time'] > last_check:
-                last_check = active_servers['update_time']
-                for ip in SERVERS:
-                    if SERVERS[ip]['server_id'] in active_servers:  # one of our servers is active
-                        server_id = SERVERS[ip]['server_id']
-                        if active_servers[server_id]['players_qty'] == 0:
-                            SERVERS[ip]['inactivity_count'] += 1
-                            sv.update_json('servers', SERVERS)
-                            print(
-                                f"Server {SERVERS[ip]['hostname']} inactivity detected. {SERVERS[ip]['inactivity_count']}/{max_inactivity}")
-                            if SERVERS[ip]['inactivity_count'] >= max_inactivity:
-                                SERVERS[ip]['inactivity_count'] = 0
-                                print(f"Stopping server {SERVERS[ip]['hostname']} due to inactivity")
-                                message = await demand_channel.fetch_message(SERVERS[ip]['message_id'])
-                                await stop_server(message, ip, inactivity=True)
-                                sv.update_json('servers', SERVERS)
-                                await alert_channel.send(
-                                    content=f":flag_{SERVERS[ip]['flag']}: `{SERVERS[ip]['hostname']}` was stopped due to inactivity.")
-                        else:
-                            SERVERS[ip]['inactivity_count'] = 0  # reset inactivity counter
-                            sv.update_json('servers', SERVERS)
-                            print(
-                                f"Server {SERVERS[ip]['hostname']} activity detected. Inactivity count reset to {SERVERS[ip]['inactivity_count']}")
-
-        except Exception as e:
-            print("Failed auto-stopper due to: ", e)
-            time.sleep(10)
-
         # New maps
         if datetime.now().timestamp() - UPDATE_TIME_MAPS > 600:
             maps_new = get_newmaps()
