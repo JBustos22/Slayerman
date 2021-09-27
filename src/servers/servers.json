@@ -24,7 +24,7 @@
         "activator": "",
         "activator_dc": "",
         "instance_id": "i-01092b4e29b5b4b44",
-        "region": "eu-west-2a",
+        "region": "eu-west-2",
         "inactivity_count": 0
     },
     "35.72.202.141": {
@@ -48,7 +48,7 @@
         "hostname": "q3df.run | Stockholm",
         "thumbnail": "https://strawberrytours.com/wp-content/uploads/2019/07/Stockholm-500x500.jpg",
         "status": "Stopped",
-        "message_id": 892137035333267536,
+        "message_id": 823018556206743583,
         "activator": "",
         "activator_dc": "",
         "instance_id": "i-0b90183227214702a",
