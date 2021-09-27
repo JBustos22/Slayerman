@@ -1,4 +1,4 @@
-from settings import CLIENT_TOKEN
+from settings import CLIENT_TOKEN, alert_ch_id, q3df_sv_id, demand_ch_id, donation_ch_id
 import discord
 from metadata import main as meta
 from mdd import records as recs, user as usr
@@ -11,28 +11,35 @@ import sys
 import time
 from servers import main as sv
 from datetime import datetime
+from dfwc import donations
 
 client = discord.Client()
 UPDATE_TIME = None
 UPDATE_TIME_MAPS = datetime.now().timestamp()
 
+q3df_guild, demand_channel, alert_channel, donation_channel = None, None, None, None
+
 @client.event
 async def on_ready():
+    global q3df_sv_id, demand_channel, alert_channel, donation_channel
+
     print('We have logged in as {0.user}'.format(client))
     await client.change_presence(activity=discord.Game("!help"))
-    last_check = datetime.min
 
-    q3df_sv_id = 751483934034100274 #649454774785146894
     q3df_guild = client.get_guild(q3df_sv_id)
-
-    demand_ch_id = 820036524900614174 #820057557473165382
     demand_channel = q3df_guild.get_channel(demand_ch_id)
-
-    alert_ch_id = 751568522982719588 #822853096165736458
     alert_channel = q3df_guild.get_channel(alert_ch_id)
+    donation_channel = q3df_guild.get_channel(donation_ch_id)
 
     while True:
         # New maps
+        try:
+            last_donation_msg = donations.main()
+            if last_donation_msg != None:
+                await donation_channel.send(last_donation_msg)
+        except:
+            continue
+
         if datetime.now().timestamp() - UPDATE_TIME_MAPS > 600:
             maps_new = get_newmaps()
 
@@ -55,7 +62,8 @@ async def on_ready():
                 except Exception as e:
                     print("Failed to fetch new maps due to: ", e)
 
-        await asyncio.sleep(60)
+
+        await asyncio.sleep(5)
 
 
 @client.event
@@ -252,8 +260,6 @@ async def on_message(message):
 async def on_raw_reaction_add(payload):
     global SERVERS
     global ACTIVATORS
-    demand_ch_id = 820036524900614174
-    alert_ch_id = 751568522982719588
     if payload.user_id == client.user.id:
         return
     for ip, metadata in SERVERS.items():
@@ -369,6 +375,7 @@ def auto_update(minutes=2):
             pass
             time.sleep(20)
 
+
 def get_newmaps():
     import feedparser
 
@@ -389,8 +396,8 @@ def get_newmaps():
             map_url = map.link
             map_release_ts = parse_dateutil(map.published).timestamp()
 
-            if map_release_ts > UPDATE_TIME_MAPS:
-                maps_new.append(map_url)
+            # if map_release_ts > UPDATE_TIME_MAPS:
+            maps_new.append(map_url)
 
         UPDATE_TIME_MAPS = datetime.now().timestamp()
     except Exception as e:
