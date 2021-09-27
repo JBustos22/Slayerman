@@ -396,8 +396,8 @@ def get_newmaps():
             map_url = map.link
             map_release_ts = parse_dateutil(map.published).timestamp()
 
-            # if map_release_ts > UPDATE_TIME_MAPS:
-            maps_new.append(map_url)
+            if map_release_ts > UPDATE_TIME_MAPS:
+                maps_new.append(map_url)
 
         UPDATE_TIME_MAPS = datetime.now().timestamp()
     except Exception as e:
