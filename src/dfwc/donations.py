@@ -64,7 +64,7 @@ def main():
         date, country, tld, name, amount, comment = donation_line
         tld = tld.lower()
         amt_val = float(amount.strip('$'))
-        updated_total = DONATION_DATA['total_amount'] + amt_val
+        updated_total = round(DONATION_DATA['total_amount'] + amt_val, 2)
         msg = f"**{amount}** donation by {f':flag_{tld}: **{name}**' if tld != 'xx' else name}"
         if comment != '.':
             msg += f': *"{comment}"*'
@@ -75,3 +75,13 @@ def main():
         SAMPLE_RANGE_NAME = f"A{DONATION_DATA['current_row']}:F{DONATION_DATA['current_row']}"
         save_donations_data()
         return msg
+    elif len(donation_line) == 4:
+        action, arg_1, arg_2, done = donation_line
+
+        if action == 'rollback':
+            row_to_rb_to = int(arg_1)
+            updated_total = round(float(arg_2.strip('$')), 2)
+            DONATION_DATA['current_row'] = row_to_rb_to
+            DONATION_DATA['total_amount'] = updated_total
+            SAMPLE_RANGE_NAME = f"A{DONATION_DATA['current_row']}:F{DONATION_DATA['current_row']}"
+            save_donations_data()
