@@ -17,3 +17,7 @@ var/
 .installed.cfg
 *.egg
 .idea
+
+src/dfwc/donations_data.json
+src/servers/servers.json
+src/servers/activators.json
