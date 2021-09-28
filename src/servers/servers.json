@@ -19,10 +19,10 @@
         "flag": "gb",
         "hostname": "q3df.run | London",
         "thumbnail": "http://zimngoma.com/wp-content/uploads/2015/03/london-500x500.jpg",
-        "status": "Stopped",
+        "status": "Active",
         "message_id": 892137029574483978,
-        "activator": "",
-        "activator_dc": "",
+        "activator": 227063536461938689,
+        "activator_dc": "Brandon\ud83d\udc1b#8855",
         "instance_id": "i-01092b4e29b5b4b44",
         "region": "eu-west-2",
         "inactivity_count": 0
@@ -95,7 +95,8 @@
         "activator_dc": "",
         "instance_id": "i-0fd1a077cda2f9a93",
         "region": "af-south-1",
-        "inactivity_count": 0
+        "inactivity_count": 0,
+        "inactivity_counter": 0
     },
     "54.94.102.4": {
         "server_id": "427",

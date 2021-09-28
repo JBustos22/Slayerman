@@ -58,7 +58,7 @@ async def on_ready():
                     for role in q3df_guild.roles:
                         if role.name == 'Maps subscribers':
                             mention = role.mention
-                            await alert_channel.send(f"{mention} New map: {map_name}", embed=map_embed)
+                            #await alert_channel.send(f"{mention} New map: {map_name}", embed=map_embed)
                 except Exception as e:
                     print("Failed to fetch new maps due to: ", e)
 

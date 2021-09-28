@@ -64,7 +64,7 @@ def main():
         date, country, tld, name, amount, comment = donation_line
         tld = tld.lower()
         amt_val = float(amount.strip('$'))
-        updated_total = DONATION_DATA['total_amount'] + amt_val
+        updated_total = round(DONATION_DATA['total_amount'] + amt_val, 2)
         msg = f"**{amount}** donation by {f':flag_{tld}: **{name}**' if tld != 'xx' else name}"
         if comment != '.':
             msg += f': *"{comment}"*'
