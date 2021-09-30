@@ -36,14 +36,14 @@ def start_server(server):
     EC2 = boto3.client('ec2', region_name=server['region'])
     EC2.start_instances(InstanceIds=[server['instance_id']], DryRun=False)
     running = EC2.get_waiter('instance_running')
-    running.wait()
+    running.wait(InstanceIds=[server['instance_id']])
 
 
 def stop_server(server):
     EC2 = boto3.client('ec2', region_name=server['region'])
     EC2.stop_instances(InstanceIds=[server['instance_id']], DryRun=False)
     stopped = EC2.get_waiter('instance_stopped')
-    stopped.wait()
+    stopped.wait(InstanceIds=[server['instance_id']])
 
 
 def get_df_launcher_url(address, server_region):
