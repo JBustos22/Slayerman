@@ -65,7 +65,7 @@ def main():
         tld = tld.lower()
         amt_val = float(amount.strip('$'))
         updated_total = round(DONATION_DATA['total_amount'] + amt_val, 2)
-        msg = f"**{amount}** donation by {f':flag_{tld}: **{name}**' if tld != 'xx' else name}"
+        msg = f"**{amount}** donation by {f':flag_{tld}: **{name}**' if tld != 'xx' else f'**{name}**'}"
         if comment != '.':
             msg += f': *"{comment}"*'
         msg += f'. The total prize pool is now **${updated_total}**!'
