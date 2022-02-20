@@ -73,6 +73,7 @@ async def on_message(message):
         return
 
     if message.content.startswith('!'):
+        print(f"{message.author} : {message.content}")
         msg = None
         cmd = message.content.split(' ')[0]
         if not cmd[1:].isalnum():
@@ -417,4 +418,9 @@ if __name__ == "__main__":
         ACTIVATORS = json.loads(f.read())
 
     threading.Thread(target=auto_update, daemon=True).start()
-    client.run(CLIENT_TOKEN if len(sys.argv) == 1 else sys.argv[1])
+    
+    while True:
+        try:
+            client.run(CLIENT_TOKEN if len(sys.argv) == 1 else sys.argv[1])
+        except Exception as e:
+            print(e)

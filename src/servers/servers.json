@@ -6,12 +6,13 @@
         "hostname": "q3df.run | Sydney",
         "thumbnail": "https://www.holidaysplease.co.uk/assets/images/119-17-sydney%20opera%20house.jpg-BasicCrop-size-500x500.jpg",
         "status": "Stopped",
-        "message_id": 892137027175321600,
+        "message_id": 905937463032311848,
         "activator": "",
         "activator_dc": "",
         "instance_id": "i-0bf0593216ec334f4",
         "region": "ap-southeast-2",
-        "inactivity_count": 0
+        "inactivity_count": 0,
+        "inactivity_counter": 0
     },
     "3.10.114.224": {
         "server_id": "435",
@@ -19,13 +20,14 @@
         "flag": "gb",
         "hostname": "q3df.run | London",
         "thumbnail": "http://zimngoma.com/wp-content/uploads/2015/03/london-500x500.jpg",
-        "status": "Active",
-        "message_id": 892137029574483978,
-        "activator": 227063536461938689,
-        "activator_dc": "Brandon\ud83d\udc1b#8855",
+        "status": "Stopped",
+        "message_id": 905937468728156210,
+        "activator": "",
+        "activator_dc": "",
         "instance_id": "i-01092b4e29b5b4b44",
         "region": "eu-west-2",
-        "inactivity_count": 0
+        "inactivity_count": 0,
+        "inactivity_counter": 0
     },
     "35.72.202.141": {
         "server_id": "433",
@@ -34,12 +36,13 @@
         "hostname": "q3df.run | Tokyo",
         "thumbnail": "https://miyamotointernational.com/wp-content/uploads/office-tokyo.jpg",
         "status": "Stopped",
-        "message_id": 892137031906508813,
+        "message_id": 905937479201357875,
         "activator": "",
         "activator_dc": "",
         "instance_id": "i-03f4396844090a677",
         "region": "ap-northeast-1",
-        "inactivity_count": 0
+        "inactivity_count": 0,
+        "inactivity_counter": 0
     },
     "13.51.137.1": {
         "server_id": "436",
@@ -48,12 +51,13 @@
         "hostname": "q3df.run | Stockholm",
         "thumbnail": "https://strawberrytours.com/wp-content/uploads/2019/07/Stockholm-500x500.jpg",
         "status": "Stopped",
-        "message_id": 823018556206743583,
+        "message_id": 905937489452216322,
         "activator": "",
         "activator_dc": "",
         "instance_id": "i-0b90183227214702a",
         "region": "eu-north-1",
-        "inactivity_count": 0
+        "inactivity_count": 0,
+        "inactivity_counter": 0
     },
     "52.39.193.224": {
         "server_id": "437",
@@ -62,12 +66,13 @@
         "hostname": "q3df.run | Oregon",
         "thumbnail": "https://higherlogicdownload.s3.amazonaws.com/PBIUSERGROUP/0dd17701-ca4a-49ad-9e12-8a3458d663ba/UploadedImages/World_Tour/2019/PPWT-Portland-500pxX500px.jpg",
         "status": "Stopped",
-        "message_id": 892137038030205028,
+        "message_id": 905937501036884008,
         "activator": "",
         "activator_dc": "",
         "instance_id": "i-0ff4c8a6240139bd6",
         "region": "us-west-2",
-        "inactivity_count": 0
+        "inactivity_count": 0,
+        "inactivity_counter": 0
     },
     "175.41.167.174": {
         "server_id": "429",
@@ -76,12 +81,13 @@
         "hostname": "q3df.run | Singapore",
         "thumbnail": "https://4.imimg.com/data4/II/II/GLADMIN-/images-portfolio-thumb-singapore-tour-package-500x500.jpg",
         "status": "Stopped",
-        "message_id": 892137049086361610,
+        "message_id": 905937511833042955,
         "activator": "",
         "activator_dc": "",
         "instance_id": "i-0108acbd2862308e4",
         "region": "ap-southeast-1",
-        "inactivity_count": 0
+        "inactivity_count": 0,
+        "inactivity_counter": 0
     },
     "13.245.107.109": {
         "server_id": "431",
@@ -90,7 +96,7 @@
         "hostname": "q3df.run | Cape Town",
         "thumbnail": "https://image.arrivalguides.com/500x500/18/f3b9c07583a62553bae420f6d9f1514e.jpg",
         "status": "Stopped",
-        "message_id": 892137051426811935,
+        "message_id": 905937524852129802,
         "activator": "",
         "activator_dc": "",
         "instance_id": "i-0fd1a077cda2f9a93",
@@ -105,7 +111,7 @@
         "hostname": "q3df.run | Sao Paolo",
         "thumbnail": "https://strawberrytours.com/wp-content/uploads/2019/10/Sao_Paulo_500x500.jpg",
         "status": "Stopped",
-        "message_id": 892137053930795028,
+        "message_id": 905937536076087396,
         "activator": "",
         "activator_dc": "",
         "instance_id": "i-0396e821c7cfed171",

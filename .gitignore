@@ -18,6 +18,9 @@ var/
 *.egg
 .idea
 
-donations_data.json
-servers.json
-activators.json
+src/dfwc/credentials.json
+src/dfwc/token.json
+src/servers/servers.json
+src/servers/activators.json
+df_data/
+update.sh
