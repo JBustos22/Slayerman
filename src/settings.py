@@ -16,5 +16,10 @@ else:
     DB_ADDRESS = 'localhost'
 
 
-CONN_STRING = f"postgres://{DB_USER}:{DB_PASSWORD}@{DB_ADDRESS}:5432/{DB_NAME}"
+CONN_STRING = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_ADDRESS}:5432/{DB_NAME}"
 db = create_engine(CONN_STRING)
+
+donation_ch_id = int(os.environ['DONATION_CHANNEL_ID'])
+alert_ch_id = int(os.environ['ALERT_CHANNEL_ID'])
+q3df_sv_id = int(os.environ['Q3DF_SV_ID'])
+demand_ch_id = int(os.environ['DEMAND_CHANNEL_ID'])

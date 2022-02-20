@@ -17,3 +17,10 @@ var/
 .installed.cfg
 *.egg
 .idea
+
+src/dfwc/credentials.json
+src/dfwc/token.json
+src/servers/servers.json
+src/servers/activators.json
+df_data/
+update.sh
