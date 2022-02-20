@@ -18,6 +18,6 @@ var/
 *.egg
 .idea
 
-src/dfwc/donations_data.json
-src/servers/servers.json
-src/servers/activators.json
+donations_data.json
+servers.json
+activators.json
