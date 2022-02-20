@@ -7,7 +7,7 @@ def get_donations_data():
             DONATION_DATA = json.loads(f.read())
     except FileNotFoundError:
         DONATION_DATA = {
-            "current_row": 2,
+            "current_row": 999,
             "total_amount": 0.
         }
 
@@ -61,6 +61,7 @@ def main():
         return
 
     if len(donation_line) == 6:
+        print(donation_line)
         date, country, tld, name, amount, comment = donation_line
         tld = tld.lower()
         amt_val = float(amount.strip('$'))
