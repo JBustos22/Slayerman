@@ -32,16 +32,17 @@ async def on_ready():
     donation_channel = q3df_guild.get_channel(donation_ch_id)
 
     while True:
-        # New maps
-        try:
-            last_donation_msg = donations.main()
-            if last_donation_msg != None:
-                await donation_channel.send(last_donation_msg)
-        except:
-            continue
+        # dfwc donations
+        # try:
+        #     last_donation_msg = donations.main()
+        #     if last_donation_msg != None:
+        #         await donation_channel.send(last_donation_msg)
+        # except:
+        #     continue
 
         if datetime.now().timestamp() - UPDATE_TIME_MAPS > 600:
             maps_new = get_newmaps()
+            print(", ".join(maps_new))
 
             for map_url in maps_new:
                 try:
@@ -58,7 +59,7 @@ async def on_ready():
                     for role in q3df_guild.roles:
                         if role.name == 'Maps subscribers':
                             mention = role.mention
-                            #await alert_channel.send(f"{mention} New map: {map_name}", embed=map_embed)
+                            await alert_channel.send(f"{mention} New map: {map_name}", embed=map_embed)
                 except Exception as e:
                     print("Failed to fetch new maps due to: ", e)
 
@@ -103,14 +104,6 @@ async def on_message(message):
                 return await message.channel.send(embed=top_embed)
             except Exception as e:
                 msg = f"Huh? `usage: {meta.get_usage('top')}`"
-
-        # elif cmd == "!wrs":
-        #     try:
-        #         map_name = message.content.split(' ')[1]
-        #         msg = top.get_wrs(map_name)
-        #     except:
-        #         msg = f"Huh? `usage: {meta.get_usage('wrs')}`"
-
         elif cmd == '!myt':
             try:
                 args = message.content.split(' ')[1:]
@@ -173,50 +166,6 @@ async def on_message(message):
                 return await message.channel.send(embed=map_embed)
             except Exception as e:
                 msg = f"Huh? `usage: {meta.get_usage('mapinfo')}`"
-
-        elif cmd == '!newmap':
-            pass
-            '''
-            try:
-                if message.channel.type.name == 'news':
-                    import re
-                    from discord import Webhook
-                    link = message.content.split(' ')[1]
-                    map_r = r"https://ws.q3df.org/map/(.*)/"
-                    map_name = re.match(map_r, link).group(1)
-                    map_data = maps.get_map_data(map_name)
-                    emoted_fields = ej.turn_to_custom_emojis(guild=message.guild, **map_data['fields']['optional'])
-                    map_data['fields']['optional'] = emoted_fields
-                    map_embed = emb.create_map_embed(map_data)
-                    map_embed.set_image(url=map_embed.Empty)
-                    for role in message.guild.roles:
-                        if role.name == 'Maps subscribers':
-                            mention = role.mention
-                            await message.delete()
-                            return await message.channel.send(f"{mention} New map: {map_name}", embed=map_embed)
-
-                    await message.delete()
-                    return await message.channel.send(f"New map: {map_name}", embed=map_embed)
-            except:
-                pass
-            '''
-
-        # elif cmd == "!update":
-        #     try:
-        #         args = message.content.split(' ')[1:]
-        #
-        #         for arg in args:
-        #             if arg in ["mdd", "records", "mdd_records_ranked"]:
-        #                 await message.add_reaction("🔄")
-        #                 mdd_scrape.crawl_records()
-        #                 await message.remove_reaction("🔄", client.user)
-        #                 await message.add_reaction("✅")
-        #
-        #         return
-        #     except Exception as e:
-        #         await message.add_reaction("❌")
-        #         msg = f"Huh? `usage: {meta.get_usage('update')}`"
-
         elif cmd == "!myid":
             try:
                 args = message.content.split(' ')[1:]
@@ -385,7 +334,7 @@ def get_newmaps():
 
     global UPDATE_TIME_MAPS
 
-    if UPDATE_TIME_MAPS == None:
+    if UPDATE_TIME_MAPS is None:
         UPDATE_TIME_MAPS = datetime.now().timestamp()
 
     maps_new = []
