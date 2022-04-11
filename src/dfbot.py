@@ -1,4 +1,4 @@
-from settings import CLIENT_TOKEN, alert_ch_id, q3df_sv_id, demand_ch_id, donation_ch_id
+from settings import CLIENT_TOKEN, alert_ch_id, q3df_sv_id, demand_ch_id, donation_ch_id, DEV
 import discord
 from metadata import main as meta
 from mdd import records as recs, user as usr
@@ -16,6 +16,7 @@ from dfwc import donations
 client = discord.Client()
 UPDATE_TIME = None
 UPDATE_TIME_MAPS = datetime.now().timestamp()
+ACTIVITY_TRACKER = {}
 
 q3df_guild, demand_channel, alert_channel, donation_channel = None, None, None, None
 
@@ -30,6 +31,7 @@ async def on_ready():
     demand_channel = q3df_guild.get_channel(demand_ch_id)
     alert_channel = q3df_guild.get_channel(alert_ch_id)
     donation_channel = q3df_guild.get_channel(donation_ch_id)
+    max_inactivity_strikes = 15
 
     while True:
         # dfwc donations
@@ -63,6 +65,15 @@ async def on_ready():
                 except Exception as e:
                     print("Failed to fetch new maps due to: ", e)
 
+        # server autostopper
+        for ip, strikes in ACTIVITY_TRACKER.items():
+            if strikes >= max_inactivity_strikes and SERVERS[ip]['status'] == 'Active':
+                print(f"Stopping server {SERVERS[ip]['hostname']} due to inactivity")
+                server_message = await demand_channel.fetch_message(SERVERS[ip]['message_id'])
+                await stop_server(server_message, ip, inactivity=True)
+                await alert_channel.send(
+                    content=f":flag_{SERVERS[ip]['flag']}: `{SERVERS[ip]['hostname']}` was stopped due to inactivity.")
+                ACTIVITY_TRACKER[ip] = 0
 
         await asyncio.sleep(5)
 
@@ -208,8 +219,7 @@ async def on_message(message):
 
 @client.event
 async def on_raw_reaction_add(payload):
-    global SERVERS
-    global ACTIVATORS
+    global SERVERS, ACTIVATORS, ACTIVITY_TRACKER
     if payload.user_id == client.user.id:
         return
     for ip, metadata in SERVERS.items():
@@ -218,7 +228,8 @@ async def on_raw_reaction_add(payload):
             alert_channel = payload.member.guild.get_channel(alert_ch_id)
             message = await channel.fetch_message(payload.message_id)
             if SERVERS[ip]['status'] == 'Stopped' and payload.emoji.name == '▶️':
-                if str(payload.user_id) in ACTIVATORS:
+                ACTIVATORS[str(payload.user_id)] = ip if str(payload.user_id) not in ACTIVATORS else ACTIVATORS[str(payload.user_id)]
+                if str(payload.user_id) in ACTIVATORS and ACTIVATORS[str(payload.user_id)] != ip:
                     await message.remove_reaction(payload.emoji, payload.member)
                     activated_ip = ACTIVATORS[str(payload.user_id)]
                     dm_channel = await payload.member.create_dm()
@@ -228,7 +239,6 @@ async def on_raw_reaction_add(payload):
                                 f"before starting a new one.")
                 server_url = sv.get_df_launcher_url(ip, SERVERS[ip]['region'])
                 await launch_server(payload, message, ip)
-                ACTIVATORS[str(payload.user_id)] = ip
                 sv.update_json("activators", ACTIVATORS)
                 print(f"Added {payload.user_id} to activators. activators = {ACTIVATORS}")
                 activator_name = payload.member.nick if payload.member.nick is not None else payload.member.name
@@ -252,6 +262,8 @@ async def on_raw_reaction_add(payload):
                     dm_channel = await payload.member.create_dm()
                     return await dm_channel.send(
                         content=f"You do not have permission to stop {SERVERS[ip]['hostname']}, as you did not start the server. ")
+                if ip in ACTIVITY_TRACKER:
+                    ACTIVITY_TRACKER[ip] = 0
                 await stop_server(message, ip, payload)
                 stopper_name = payload.member.nick if payload.member.nick is not None else payload.member.name
                 await alert_channel.send(
@@ -266,7 +278,7 @@ async def launch_server(payload, message, ip):
     embed = message.embeds[0]
     embed.set_field_at(1, name='Status', value=f':orange_circle: Starting', inline=False)
     await message.edit(embed=embed)
-    sv.start_server(SERVERS[ip])
+    sv.start_server(SERVERS[ip]) if not DEV else None
     embed = message.embeds[0]
     embed.set_field_at(1, name='Status', value=f':green_circle: Active', inline=False)
     SERVERS[ip]['status'] = "Active"
@@ -278,11 +290,11 @@ async def launch_server(payload, message, ip):
     await message.add_reaction("⏹️")
 
 
-async def stop_server(message, ip, payload=None, inactivity=False):
+async def stop_server(server_message, ip, payload=None, inactivity=False):
     global SERVERS
     global ACTIVATORS
-    await message.clear_reactions()
-    embed = message.embeds[0]
+    await server_message.clear_reactions()
+    embed = server_message.embeds[0]
     try:
         embed.set_field_at(1, name='Status', value=f':orange_circle: Stopping', inline=False)
         if inactivity:
@@ -291,16 +303,16 @@ async def stop_server(message, ip, payload=None, inactivity=False):
             embed.set_field_at(2, name='Stopper', value=f"{payload.member.mention}", inline=False)
     except:
         pass
-    await message.edit(embed=embed)
+    await server_message.edit(embed=embed)
     time.sleep(10)
-    sv.stop_server(SERVERS[ip])
+    sv.stop_server(SERVERS[ip]) if not DEV else None
     SERVERS[ip]['status'] = "Stopped"
     SERVERS[ip]['inactivity_counter'] = 0
-    embed = message.embeds[0]
+    embed = server_message.embeds[0]
     embed.remove_field(2)
     embed.set_field_at(1, name='Status', value=':red_circle: Stopped', inline=False)
-    await message.edit(embed=embed)
-    await message.add_reaction("▶️")
+    await server_message.edit(embed=embed)
+    await server_message.add_reaction("▶️")
     try:
         ACTIVATORS.pop(str(SERVERS[ip]['activator']))
         print(f"Removed {SERVERS[ip]['activator']} from activators. activators = {ACTIVATORS}")
@@ -321,6 +333,34 @@ def auto_update(minutes=2):
             mdd_scrape.crawl_records()
             UPDATE_TIME = datetime.now()
             time.sleep(60 * minutes)
+        except:
+            pass
+            time.sleep(20)
+
+
+def server_activity_tracker():
+    global ACTIVITY_TRACKER
+    import requests
+    url = f'https://servers.q3df.run/'
+    last_ts = ""
+    ips = ACTIVITY_TRACKER.keys()
+    while True:
+        try:
+            data = requests.get(url).json()
+
+            if last_ts != data['timestamp']:
+                last_ts = data['timestamp']
+                for ip in ips:
+                    if f'{ip}:27960' in data['empty']:
+                        ACTIVITY_TRACKER[ip] += 1
+                        print(f"Server {SERVERS[ip]['hostname']} inactivity detected. {ACTIVITY_TRACKER[ip]}/15")
+                    elif f'{ip}:27960' in data['active']:
+                        ACTIVITY_TRACKER[ip] = 0
+                        print(f"Server {SERVERS[ip]['hostname']} activity detected. {ACTIVITY_TRACKER[ip]}/15")
+                    else:
+                        ACTIVITY_TRACKER[ip] = 0
+            else:
+                time.sleep(120)
         except:
             pass
             time.sleep(20)
@@ -366,7 +406,9 @@ if __name__ == "__main__":
     with open("servers/activators.json") as f:
         ACTIVATORS = json.loads(f.read())
 
+    ACTIVITY_TRACKER = {ip: 0 for ip in SERVERS.keys()}
     threading.Thread(target=auto_update, daemon=True).start()
+    threading.Thread(target=server_activity_tracker, daemon=True).start()
     
     while True:
         try:
