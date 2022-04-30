@@ -24,4 +24,6 @@ alert_ch_id = int(os.environ['ALERT_CHANNEL_ID'])
 q3df_sv_id = int(os.environ['Q3DF_SV_ID'])
 demand_ch_id = int(os.environ['DEMAND_CHANNEL_ID'])
 
+admin_id = int(os.environ['ADMIN_ID'])
+
 DEV = True if 'DF_DEV' in os.environ else False

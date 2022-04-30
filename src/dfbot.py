@@ -1,4 +1,4 @@
-from settings import CLIENT_TOKEN, alert_ch_id, q3df_sv_id, demand_ch_id, donation_ch_id, DEV
+from settings import CLIENT_TOKEN, alert_ch_id, q3df_sv_id, demand_ch_id, donation_ch_id, DEV, admin_id
 import discord
 from metadata import main as meta
 from mdd import records as recs, user as usr
@@ -229,7 +229,7 @@ async def on_raw_reaction_add(payload):
             message = await channel.fetch_message(payload.message_id)
             if SERVERS[ip]['status'] == 'Stopped' and payload.emoji.name == '▶️':
                 ACTIVATORS[str(payload.user_id)] = ip if str(payload.user_id) not in ACTIVATORS else ACTIVATORS[str(payload.user_id)]
-                if str(payload.user_id) in ACTIVATORS and ACTIVATORS[str(payload.user_id)] != ip:
+                if str(payload.user_id) in ACTIVATORS and ACTIVATORS[str(payload.user_id)] != ip and payload.user_id != admin_id:
                     await message.remove_reaction(payload.emoji, payload.member)
                     activated_ip = ACTIVATORS[str(payload.user_id)]
                     dm_channel = await payload.member.create_dm()
