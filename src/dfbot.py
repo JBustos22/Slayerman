@@ -380,7 +380,7 @@ def get_newmaps():
     maps_new = []
 
     try:
-        maps_feed = feedparser.parse("https://ws.q3df.org/rss/released_maps/")
+        maps_feed = feedparser.parse("https://ws.q3df.org/rss/released_maps/?mod=1")
 
         for map in maps_feed.entries:
             map_url = map.link
